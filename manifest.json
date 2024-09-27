@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "ReadMate",
+  "description": "An extension that allows text to be read aloud",
+  "version": "0.0.1",
+  "permissions": ["activeTab", "scripting", "tts", "contextMenus"],
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "action": {
+    "default_popup": "src/readmate.html"
+  }
+}
