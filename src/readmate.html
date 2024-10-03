@@ -3,10 +3,34 @@
   <head>
     <title>ReadMate</title>
     <link rel="stylesheet" href="readmate.css" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <h1 id="titleHeader">ReadMate</h1>
-    <button id="ttsBtn">Read Aloud</button>
+    <div class = "popup-container">
+      <div class = "popup-header">
+        <div class="drag-handle">&#x2630;</div> 
+        <h1 id="titleHeader">ReadMate</h1> 
+        <button class="hide-btn">-</button>
+        <button class="close-btn">&times;</button>
+      </div>
+
+      <div class="button-row">
+        <button class="refresh-btn">&#x21bb;</button>
+        <button id="ttsBtn">&#9658;</button>
+        <button class="settings-btn">&#9881;</button>
+      </div>
+
+      <div class = "volume">
+        <span class="icon">&#128266;</span>
+        <input type="range" min="0" max="100">
+      </div>
+
+      <div class="speed">
+        <span class="icon">&#128100;</span>
+        <input type="range" min="0.5" max="2" step="0.1" value="1">
+      </div>
+
+    </div>
     <script src="../scripts/readmate.js"></script>
   </body>
 </html>

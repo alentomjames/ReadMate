@@ -5,16 +5,92 @@
 }
 
 body {
+  font-family: Arial, sans-serif;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: white;
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
   text-align: center;
 }
 
-#titleHeader {
-  margin-left: 10px;
-  margin-right: 10px;
+h1 { 
+  margin-right: 70px;
+  margin-left: 90px;
+  font-size: 15px;
 }
 
-#ttsBtn {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 5px;
+.popup-container {
+  width: 300px;
+  height: 200px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
 }
+
+.popup-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 10px;
+}
+
+/* Drag, Hide, Close, Rewind, Play, and Option Buttons */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: black;
+}
+
+button:hover {
+  color: blue;
+}
+.drag-handle { 
+  cursor: grab;
+}
+.button-row { 
+  padding-top: 1.5em;
+}
+.refresh-btn { 
+  font-size: 40px;
+}
+#ttsBtn {
+  font-size: 60px;
+}
+.settings-btn { 
+  font-size: 40px;
+}
+.close-btn { 
+  font-size: 20px;
+}
+
+/* Volume & Voice Speed Sliders */
+.speed .speed-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 180px;
+}
+
+.speed .speed-labels span {
+  font-size: 12px;
+}
+
+.volume, .speed {
+  align-items: center;
+
+}
+.volume .icon, .speed .icon {
+  font-size: 30px;
+}
+
+input[type="range"] {
+  width:180px;
+}
+
+
+
