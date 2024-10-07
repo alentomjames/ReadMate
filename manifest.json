@@ -3,7 +3,7 @@
   "name": "ReadMate",
   "description": "TTS browser extension to help those with learning disabilities",
   "version": "0.0.1",
-  "permissions": ["activeTab", "scripting", "tts", "contextMenus"],
+  "permissions": ["storage", "activeTab", "scripting", "tts", "contextMenus"],
   "background": {
     "service_worker": "scripts/background.js"
   },

@@ -6,15 +6,26 @@
 
 body {
   text-align: center;
+  width: 200px;
 }
 
-#titleHeader {
+#title {
   margin-left: 10px;
   margin-right: 10px;
 }
 
 #ttsBtn {
   margin-top: 10px;
-  margin-bottom: 10px;
   padding: 5px;
+}
+
+#settingsBtn {
+  position: absolute;
+  margin-top: 5px;
+  margin-left: 80px;
+}
+
+#controls {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
