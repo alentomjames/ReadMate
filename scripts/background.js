@@ -1,5 +1,7 @@
 const lang = "en-US";
 var initialRate = 1.0;
+var chunks = [];
+var currentChunkIndex = 0;
 var rateChanged = false;
 
 // This listener listens for TTS requests from the button press in the extension popup.
@@ -7,7 +9,8 @@ chrome.runtime.onMessage.addListener((request) => {
   if (request.text) {
     chrome.storage.local.get(["rate"], (result) => {
       const currentRate = result.rate || initialRate;
-      tts(request.text, currentRate);
+      chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
+      tts(currentRate);
     });
   }
 
@@ -16,8 +19,8 @@ chrome.runtime.onMessage.addListener((request) => {
     chrome.storage.local.get(["rate"], (result) => {
       var currentRate = result.rate || initialRate;
       currentRate = request.slow
-        ? Math.max(0.5, currentRate - 0.1) // Prevent speaking rate from going too slow (half the speed)
-        : Math.min(2.0, currentRate + 0.1); // Prevent speaking rate from going too fast (double the speed)
+        ? Math.max(0.5, currentRate - 0.1) // Prevent speaking rate from going too slow (half the speed of normal is lowest)
+        : Math.min(2.0, currentRate + 0.1); // Prevent speaking rate from going too fast (double the speed of normal is highest)
       chrome.storage.local.set({ rate: currentRate }, () => {
         chrome.tts.isSpeaking((speaking) => {
           if (speaking) {
@@ -30,6 +33,7 @@ chrome.runtime.onMessage.addListener((request) => {
 
   if (request.stop) {
     chrome.tts.stop();
+    currentChunkIndex = 0;
   }
 });
 
@@ -47,42 +51,46 @@ chrome.contextMenus.onClicked.addListener((menuOption) => {
   if (menuOption.menuItemId === "ttsRightClick")
     chrome.storage.local.get(["rate"], (result) => {
       const currentRate = result.rate || initialRate;
-      tts(menuOption.selectionText, currentRate);
+
+      // Split text into sentences using . ! ? ; : as delimiters.
+      chunks = menuOption.selectionText.match(/[^.!?;:]+[.!?;:]+/g) || [
+        menuOption.selectionText,
+      ];
+      tts(currentRate);
     });
 });
 
 // This function is calling Chrome's TTS API to read the text aloud.
-function tts(text, rate) {
-  const chunks = text.match(/[^.!?;:]+[.!?;:]+/g) || [text]; // Split text into sentences using . ! ? ; : as delimiters.
-  chrome.storage.local.set({ lastChunk: text });
-
-  chunks.forEach((chunk, index) => {
-    chrome.tts.speak(chunk, {
+function tts(rate) {
+  if (currentChunkIndex < chunks.length) {
+    chrome.tts.speak(chunks[currentChunkIndex], {
       requiredEventTypes: ["cancelled", "end", "interrupted"],
       lang: lang,
       rate: rate,
-      enqueue: true,
       onEvent: function (event) {
-        if (event.type === "end" && index === chunks.length - 1) {
-          if (!rateChanged) {
+        if (event.type === "end") {
+          currentChunkIndex++;
+          if (currentChunkIndex < chunks.length) {
+            tts(rate);
+          } else if (!rateChanged) {
             chrome.runtime.sendMessage({ ttsEnded: true });
+            currentChunkIndex = 0;
           }
         }
         if (event.type === "cancelled" || event.type === "interrupted") {
           if (!rateChanged) {
             chrome.runtime.sendMessage({ ttsEnded: true });
+            currentChunkIndex = 0;
           }
         }
         rateChanged = false;
       },
     });
-  });
+  }
 }
 
-// This function restarts speech with the new rate from the current chunk
+// This function restarts TTS with the new rate, beginning from the most current chunk.
 function restartWithNewRate(rate) {
   chrome.tts.stop();
-  chrome.storage.local.get(["lastChunk"], (result) => {
-    if (result.lastChunk) tts(result.lastChunk, rate);
-  });
+  tts(rate);
 }
