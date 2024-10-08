@@ -1,73 +1,65 @@
 var isPaused = false;
-var textExists = false;
 
-// This is adding click functionality to the button in the in the extension popup.
+/* This is adding click functionality to the button in the in the extension popup.
+  The button can show:
+    - "Read Aloud" if awaiting a click, and if there is a click, but no text was highlighted.
+    - "Pause" if the TTS is currently speaking.
+    - "Resume" if the TTS is currently paused.
+*/
 document.getElementById("ttsBtn").addEventListener("click", () => {
   chrome.tts.isSpeaking((speaking) => {
     if (speaking) {
       if (isPaused) {
-        // Resume the speech if it was paused
         chrome.tts.resume();
         isPaused = false;
         document.getElementById("ttsBtn").textContent = "Pause";
       } else {
-        // Pause the speech if it's currently speaking
         chrome.tts.pause();
         isPaused = true;
         document.getElementById("ttsBtn").textContent = "Resume";
       }
     } else {
-      // Start reading aloud if nothing is currently speaking
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.scripting.executeScript({
-          target: { tabId: tabs[0].id },
-          function: getHighlightedText,
-        });
-      });
+        chrome.scripting.executeScript(
+          {
+            target: { tabId: tabs[0].id },
+            function: () => window.getSelection().toString(),
+          },
+          (results) => {
+            const selectedText = results && results[0] && results[0].result;
 
-      if (textExists) {
-        document.getElementById("ttsBtn").textContent = "Pause";
-      }
+            // If the text exists, show "Pause" for initial button press. else "Read Aloud"
+            if (selectedText) {
+              chrome.runtime.sendMessage({ text: selectedText });
+              document.getElementById("ttsBtn").textContent = "Pause";
+            } else {
+              document.getElementById("ttsBtn").textContent = "Read Aloud";
+            }
+          }
+        );
+      });
     }
   });
 });
 
+// The slow button sends a rateChange request with slow set to true.
 document.getElementById("slowBtn").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: () => {
-        chrome.runtime.sendMessage({ slow: true });
-      },
-    });
-  });
+  chrome.runtime.sendMessage({ rateChange: true, slow: true });
 });
 
+// The fast button sends a rateChange request with slow set to false.
 document.getElementById("fastBtn").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: () => {
-        chrome.runtime.sendMessage({ fast: true });
-      },
-    });
-  });
+  chrome.runtime.sendMessage({ rateChange: true, slow: false });
 });
 
+// The stop button sends a stop request to the background script.
 document.getElementById("stopBtn").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: () => {
-        chrome.runtime.sendMessage({ stop: true });
-      },
-    });
-  });
+  chrome.runtime.sendMessage({ stop: true });
 });
 
-// Listen for messages from the background script to reset the button
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.ttsEnded) {
+// This listens for requests from the background script to reset the button (can be expanded upon later)
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.ttsEnded) {
     resetTTSButton();
   }
 });
@@ -77,7 +69,6 @@ function getHighlightedText() {
   const selectedText = window.getSelection().toString();
   if (selectedText) {
     chrome.runtime.sendMessage({ text: selectedText });
-    textExists = true;
   }
 }
 
