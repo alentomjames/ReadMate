@@ -57,6 +57,16 @@ document.getElementById("stopBtn").addEventListener("click", () => {
   chrome.runtime.sendMessage({ stop: true });
 });
 
+// This opens the settings window.
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  chrome.windows.create({
+    url: "src/settings.html",
+    type: "popup",
+    width: 400,
+    height: 300,
+  });
+});
+
 // This listens for requests from the background script to reset the button (can be expanded upon later)
 chrome.runtime.onMessage.addListener((request) => {
   if (request.ttsEnded) {
