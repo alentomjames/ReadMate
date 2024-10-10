@@ -3,12 +3,13 @@
   padding: 0;
   box-sizing: border-box;
   border: none;
+  border-radius: 5px;
 }
 
 body {
   font-family: 'DM Sans', sans-serif;
   text-align: center;
-  width: 230px;
+  width: 250px;
   border: none;
   border-radius: 10px;
 }
@@ -18,7 +19,9 @@ body {
   justify-content: center;
   
 }
-
+.drag-handle { 
+  cursor: grab;
+}
 button { 
   background: none; 
   border: none; 
@@ -26,15 +29,22 @@ button {
   font-size: 30px;
   font-weight: bold;
 }
-
-
+button:hover { 
+  color: red;
+}
 #controls button { 
- 
   margin: 0; 
+}
+#controls button:hover { 
+  color: blue;
+}
+#stopBtn { 
+  padding: 5px;
+  font-size: 50px;
 }
 
 #ttsBtn { 
-  padding: 0px;
+  padding: 5px;
   font-size: 50px;
 }
 
@@ -53,7 +63,7 @@ button {
   height: 20px;
 }
 #title { 
-  margin-left: 66px;
+  margin-left: 75px;
   margin-right: 20px;
   padding-top: 10px;
   text-align: center;
@@ -64,5 +74,6 @@ button {
   padding-top: 10px;
   font-size: 15px;
 }
+
 
 
