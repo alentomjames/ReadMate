@@ -96,40 +96,45 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
   }
 });
 
-// The slow button sends a rateChange request with slow set to true.
+// The slow button sends a skipSentence request with forward set to false.
 document.getElementById("slowBtn").addEventListener("click", () => {
   try {
-    chrome.runtime.sendMessage({ rateChange: true, slow: true }, (response) => {
-      if (chrome.runtime.lastError) {
-        alert("Failed to change the reading speed to slow. Please try again.");
-        return;
-      }
+    chrome.runtime.sendMessage(
+      { skipSentence: true, forward: false },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          alert(
+            "Failed to change the reading speed to slow. Please try again."
+          );
+          return;
+        }
 
-      if (!response || !response.success) {
-        console.error("Failed to process the rate change request.");
-        alert(
-          "An issue occurred while adjusting the reading speed. Please try again."
-        );
-      } else {
-        console.log("Reading speed changed to slow successfully.");
-        alert(
-          `Reading speed changed from ${response.oldRate.toFixed(
-            2
-          )} to ${response.newRate.toFixed(2)} successfully.`
-        );
+        if (!response || !response.success) {
+          console.error("Failed to process the rate change request.");
+          alert(
+            "An issue occurred while adjusting the reading speed. Please try again."
+          );
+        } else {
+          console.log("Reading speed changed to slow successfully.");
+          alert(
+            `Reading speed changed from ${response.oldRate.toFixed(
+              2
+            )} to ${response.newRate.toFixed(2)} successfully.`
+          );
+        }
       }
-    });
+    );
   } catch (error) {
     console.error("Unexpected error:", error);
     alert("An unexpected error occurred. Please try again.");
   }
 });
 
-// The fast button sends a rateChange request with slow set to false.
+// The fast button sends a skipSentence request with forward set to true.
 document.getElementById("fastBtn").addEventListener("click", () => {
   try {
     chrome.runtime.sendMessage(
-      { rateChange: true, slow: false },
+      { skipSentence: true, forward: true },
       (response) => {
         if (chrome.runtime.lastError) {
           alert(
