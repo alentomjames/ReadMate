@@ -5,35 +5,48 @@ var currentChunkIndex = 0;
 var rateChanged = false;
 
 // This listener listens for TTS requests from the button press in the extension popup.
-chrome.runtime.onMessage.addListener((request) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.text) {
     chrome.storage.local.get(["rate"], (result) => {
       const currentRate = result.rate || initialRate;
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
       tts(currentRate);
-    });
-  }
+  });
+}
 
   if (request.rateChange) {
     rateChanged = true;
     chrome.storage.local.get(["rate"], (result) => {
       var currentRate = result.rate || initialRate;
-      currentRate = request.slow
+      let newRate = request.slow
         ? Math.max(0.5, currentRate - 0.1) // Prevent speaking rate from going too slow (half the speed of normal is lowest)
         : Math.min(2.0, currentRate + 0.1); // Prevent speaking rate from going too fast (double the speed of normal is highest)
-      chrome.storage.local.set({ rate: currentRate }, () => {
+      chrome.storage.local.set({ rate: newRate }, () => {
         chrome.tts.isSpeaking((speaking) => {
           if (speaking) {
-            restartWithNewRate(currentRate);
+            restartWithNewRate(newRate);
           }
+          sendResponse({ success: true, oldRate: currentRate, newRate: newRate });
         });
       });
     });
+    return true;
   }
+  return true;
+});
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.stop) {
-    chrome.tts.stop();
-    currentChunkIndex = 0;
+    chrome.tts.isSpeaking((speaking) => {
+      if (speaking) {
+        chrome.tts.stop(); // Stop the TTS if it's currently speaking
+        currentChunkIndex = 0; // Reset the chunk index
+        sendResponse({ success: true, message: "TTS has been stopped successfully." });
+      } else {
+        sendResponse({ success: false, message: "TTS was not running." });
+      }
+    });
+    return true; // Required to send asynchronous response in onMessage
   }
 });
 
@@ -75,6 +88,7 @@ function tts(rate) {
           } else if (!rateChanged) {
             chrome.runtime.sendMessage({ ttsEnded: true });
             currentChunkIndex = 0;
+            rateChanged=false;
           }
         }
         if (event.type === "cancelled" || event.type === "interrupted") {
@@ -83,6 +97,9 @@ function tts(rate) {
             currentChunkIndex = 0;
           }
         }
+        if (event.type === "error") {
+          console.error("TTS Error:", event.errorMessage);
+        }        
         rateChanged = false;
       },
     });
