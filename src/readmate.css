@@ -7,62 +7,61 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   text-align: center;
   width: 250px;
   border: none;
   border-radius: 10px;
 }
 
-#controls { 
+#controls {
   display: flex;
   justify-content: center;
-  
 }
-.drag-handle { 
+.drag-handle {
   cursor: grab;
 }
-button { 
-  background: none; 
-  border: none; 
+.topHeaderButton {
+  background: none;
+  border: none;
   padding: 3px;
   font-size: 30px;
   font-weight: bold;
 }
-button:hover { 
+.topHeaderButton:hover {
   color: red;
 }
-#controls button { 
-  margin: 0; 
+#controls button {
+  margin: 0;
 }
-#controls button:hover { 
+#controls button:hover {
   color: blue;
 }
-#stopBtn { 
+#stopBtn {
   padding: 5px;
   font-size: 50px;
 }
 
-#ttsBtn { 
+#ttsBtn {
   padding: 5px;
   font-size: 50px;
 }
 
-#fastBtn { 
+#fastBtn {
   font-size: 25px;
 }
 
-#slowBtn{
+#slowBtn {
   font-size: 25px;
 }
 
-#topHeader { 
+#topHeader {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   height: 20px;
 }
-#title { 
+#title {
   margin-left: 75px;
   margin-right: 20px;
   padding-top: 10px;
@@ -74,6 +73,3 @@ button:hover {
   padding-top: 10px;
   font-size: 15px;
 }
-
-
-

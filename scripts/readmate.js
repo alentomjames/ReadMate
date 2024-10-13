@@ -46,14 +46,14 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
   });
 });
 
-// The slow button sends a rateChange request with slow set to true.
+// The slow button sends a skipSentence request with forward set to false.
 document.getElementById("slowBtn").addEventListener("click", () => {
-  chrome.runtime.sendMessage({ rateChange: true, slow: true });
+  chrome.runtime.sendMessage({ skipSentence: true, forward: false });
 });
 
-// The fast button sends a rateChange request with slow set to false.
+// The fast button sends a skipSentence request with forward set to true.
 document.getElementById("fastBtn").addEventListener("click", () => {
-  chrome.runtime.sendMessage({ rateChange: true, slow: false });
+  chrome.runtime.sendMessage({ skipSentence: true, forward: true });
 });
 
 // The stop button sends a stop request to the background script.
