@@ -14,21 +14,28 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
           if (isPaused) {
             chrome.tts.resume();
             isPaused = false;
-            document.getElementById("ttsBtn").textContent = "Pause";
+            document.getElementById("ttsBtn").innerHTML =
+              '<i class="bi bi-pause-circle"></i>';
           } else {
             chrome.tts.pause();
             isPaused = true;
-            document.getElementById("ttsBtn").textContent = "Resume";
+            document.getElementById("ttsBtn").innerHTML =
+              '<i class="bi bi-play-circle"></i>';
           }
         } catch (error) {
           console.error("Error while pausing/resuming TTS:", error);
-          alert("An error occurred while trying to pause or resume the reading.");
+          alert(
+            "An error occurred while trying to pause or resume the reading."
+          );
         }
       } else {
         try {
           chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (chrome.runtime.lastError || !tabs[0]) {
-              console.error("Error querying active tab:", chrome.runtime.lastError);
+              console.error(
+                "Error querying active tab:",
+                chrome.runtime.lastError
+              );
               alert("Failed to access the active tab. Please try again.");
               return;
             }
@@ -41,30 +48,40 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
                 },
                 (results) => {
                   if (chrome.runtime.lastError) {
-                    console.error("Error executing script:", chrome.runtime.lastError);
+                    console.error(
+                      "Error executing script:",
+                      chrome.runtime.lastError
+                    );
                     alert("Failed to extract selected text. Please try again.");
                     return;
                   }
 
-                  const selectedText = results && results[0] && results[0].result;
+                  const selectedText =
+                    results && results[0] && results[0].result;
 
                   if (selectedText) {
                     try {
                       chrome.runtime.sendMessage({ text: selectedText });
-                      document.getElementById("ttsBtn").textContent = "Pause";
+                      document.getElementById("ttsBtn").innerHTML =
+                        '<i class="bi bi-pause-circle"></i>';
                     } catch (error) {
                       console.error("Error sending text to TTS:", error);
                       alert("Failed to send the selected text to TTS.");
                     }
                   } else {
-                    alert("No text selected. Please highlight some text before clicking.");
-                    document.getElementById("ttsBtn").textContent = "Read Aloud";
+                    alert(
+                      "No text selected. Please highlight some text before clicking."
+                    );
+                    document.getElementById("ttsBtn").innerHTML =
+                      '<i class="bi bi-play-circle"></i>';
                   }
                 }
               );
             } catch (error) {
               console.error("Error during script execution:", error);
-              alert("An error occurred while executing the script to get selected text.");
+              alert(
+                "An error occurred while executing the script to get selected text."
+              );
             }
           });
         } catch (error) {
@@ -90,10 +107,16 @@ document.getElementById("slowBtn").addEventListener("click", () => {
 
       if (!response || !response.success) {
         console.error("Failed to process the rate change request.");
-        alert("An issue occurred while adjusting the reading speed. Please try again.");
+        alert(
+          "An issue occurred while adjusting the reading speed. Please try again."
+        );
       } else {
         console.log("Reading speed changed to slow successfully.");
-        alert(`Reading speed changed from ${response.oldRate.toFixed(2)} to ${response.newRate.toFixed(2)} successfully.`);
+        alert(
+          `Reading speed changed from ${response.oldRate.toFixed(
+            2
+          )} to ${response.newRate.toFixed(2)} successfully.`
+        );
       }
     });
   } catch (error) {
@@ -105,20 +128,31 @@ document.getElementById("slowBtn").addEventListener("click", () => {
 // The fast button sends a rateChange request with slow set to false.
 document.getElementById("fastBtn").addEventListener("click", () => {
   try {
-    chrome.runtime.sendMessage({ rateChange: true, slow: false }, (response) => {
-      if (chrome.runtime.lastError) {
-        alert("Failed to change the reading speed to fast. Please try again.");
-        return;
-      }
+    chrome.runtime.sendMessage(
+      { rateChange: true, slow: false },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          alert(
+            "Failed to change the reading speed to fast. Please try again."
+          );
+          return;
+        }
 
-      if (!response || !response.success) {
-        console.error("Failed to process the rate change request.");
-        alert("An issue occurred while adjusting the reading speed. Please try again.");
-      } else {
-        console.log("Reading speed changed to flow successfully.");
-        alert(`Reading speed changed from ${response.oldRate.toFixed(2)} to ${response.newRate.toFixed(2)} successfully.`);
+        if (!response || !response.success) {
+          console.error("Failed to process the rate change request.");
+          alert(
+            "An issue occurred while adjusting the reading speed. Please try again."
+          );
+        } else {
+          console.log("Reading speed changed to flow successfully.");
+          alert(
+            `Reading speed changed from ${response.oldRate.toFixed(
+              2
+            )} to ${response.newRate.toFixed(2)} successfully.`
+          );
+        }
       }
-    });
+    );
   } catch (error) {
     console.error("Unexpected error:", error);
     alert("An unexpected error occurred. Please try again.");
@@ -128,14 +162,16 @@ document.getElementById("fastBtn").addEventListener("click", () => {
 // The stop button sends a stop request to the background script.
 document.getElementById("stopBtn").addEventListener("click", () => {
   try {
-    chrome.runtime.sendMessage({ stop: true}, (response) => {
+    chrome.runtime.sendMessage({ stop: true }, (response) => {
       if (chrome.runtime.lastError) {
         alert("Failed to stop reading the script. Please try again.");
         return;
       }
 
       if (!response || !response.success) {
-        alert("An issue occurred while trying to stop reading the script. Please try again.");
+        alert(
+          "An issue occurred while trying to stop reading the script. Please try again."
+        );
       } else {
         console.log("Reading has been successfully stopped.");
         alert("The reading has stopped and reset successfully.");
@@ -159,7 +195,10 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
       },
       (window) => {
         if (chrome.runtime.lastError) {
-          console.error("Error opening settings window:", chrome.runtime.lastError);
+          console.error(
+            "Error opening settings window:",
+            chrome.runtime.lastError
+          );
           alert("Failed to open the settings window. Please try again.");
         } else {
           console.log("Settings window opened successfully:", window);
@@ -168,17 +207,19 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
     );
   } catch (error) {
     console.error("Unexpected error while opening the settings window:", error);
-    alert("An unexpected error occurred while opening the settings window. Please try again.");
+    alert(
+      "An unexpected error occurred while opening the settings window. Please try again."
+    );
   }
 });
 
 // This listens for requests from the background script to reset the button (can be expanded upon later)
 chrome.runtime.onMessage.addListener((request) => {
-  try{
+  try {
     if (request.ttsEnded) {
       resetTTSButton();
     }
-  }catch (error){
+  } catch (error) {
     console.error("Error handling the message from background script:", error);
   }
 });
@@ -190,14 +231,21 @@ function getHighlightedText() {
     if (selectedText) {
       chrome.runtime.sendMessage({ text: selectedText }, (response) => {
         if (chrome.runtime.lastError) {
-          console.error("Error sending highlighted text:", chrome.runtime.lastError);
+          console.error(
+            "Error sending highlighted text:",
+            chrome.runtime.lastError
+          );
           alert("Failed to send the highlighted text. Please try again.");
           return;
         }
 
         if (!response || !response.success) {
-          console.error("Background script failed to process the highlighted text.");
-          alert("An issue occurred while processing the highlighted text. Please try again.");
+          console.error(
+            "Background script failed to process the highlighted text."
+          );
+          alert(
+            "An issue occurred while processing the highlighted text. Please try again."
+          );
         } else {
           console.log("Highlighted text sent successfully.");
         }
@@ -207,7 +255,9 @@ function getHighlightedText() {
     }
   } catch (error) {
     console.error("Unexpected error while getting highlighted text:", error);
-    alert("An unexpected error occurred while processing the selected text. Please try again.");
+    alert(
+      "An unexpected error occurred while processing the selected text. Please try again."
+    );
   }
 }
 
@@ -216,7 +266,7 @@ function resetTTSButton() {
   try {
     const ttsBtn = document.getElementById("ttsBtn");
     if (ttsBtn) {
-      ttsBtn.textContent = "Read Aloud";
+      ttsBtn.innerHTML = '<i class="bi bi-play-circle"></i>';
       isPaused = false;
       console.log("TTS button reset to 'Read Aloud'.");
     } else {
@@ -225,6 +275,8 @@ function resetTTSButton() {
     }
   } catch (error) {
     console.error("Unexpected error while resetting the TTS button:", error);
-    alert("An unexpected error occurred while resetting the TTS button. Please try again.");
+    alert(
+      "An unexpected error occurred while resetting the TTS button. Please try again."
+    );
   }
 }
