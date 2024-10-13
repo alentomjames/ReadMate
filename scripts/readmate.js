@@ -12,11 +12,13 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
       if (isPaused) {
         chrome.tts.resume();
         isPaused = false;
-        document.getElementById("ttsBtn").textContent = "Pause";
+        document.getElementById("ttsBtn").innerHTML =
+          '<i class="bi bi-pause-circle"></i>';
       } else {
         chrome.tts.pause();
         isPaused = true;
-        document.getElementById("ttsBtn").textContent = "Resume";
+        document.getElementById("ttsBtn").innerHTML =
+          '<i class="bi bi-play-circle"></i>';
       }
     } else {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -31,9 +33,11 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
             // If the text exists, show "Pause" for initial button press. else "Read Aloud"
             if (selectedText) {
               chrome.runtime.sendMessage({ text: selectedText });
-              document.getElementById("ttsBtn").textContent = "Pause";
+              document.getElementById("ttsBtn").innerHTML =
+                '<i class="bi bi-pause-circle"></i>';
             } else {
-              document.getElementById("ttsBtn").textContent = "Read Aloud";
+              document.getElementById("ttsBtn").innerHTML =
+                '<i class="bi bi-play-circle"></i>';
             }
           }
         );
@@ -84,6 +88,7 @@ function getHighlightedText() {
 
 // This function resets the primary TTS Button text to "Read Aloud"
 function resetTTSButton() {
-  document.getElementById("ttsBtn").textContent = "Read Aloud";
+  document.getElementById("ttsBtn").innerHTML =
+    '<i class="bi bi-play-circle"></i>';
   isPaused = false;
 }
