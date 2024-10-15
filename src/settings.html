@@ -2,11 +2,20 @@
 <html></html>
 <head>
   <title>ReadMate Settings</title>
-  <link rel="stylesheet" href="readmate.css" />
+  <link rel="stylesheet" href="settings.css" />
 </head>
 <body>
   <h1>Settings</h1>
-  <p>Basic settings pop up.</p>
+
+  <div class="rateSlider">
+    <label for="rate">Select speech rate:</label>
+    <input type="range" id="rate" min="0.5" max="2.0" step="0.1" value="1.0" />
+    <span id="rateValue">1.0</span>
+  </div>
+
+  <div class="volumeSlider"></div>
+
+  <div class="voiceDropdown"></div>
 
   <script src="../scripts/settings.js"></script>
 </body>
