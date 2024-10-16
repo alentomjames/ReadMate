@@ -1,6 +1,8 @@
 const lang = "en-US";
-var initialRate = 1.0;
-var initialVolume = 1.0;
+var defaultRate = 1.0;
+var defaultVolume = 1.0;
+var defaultVoice = "";
+
 var chunks = [];
 var currentChunkIndex = 0;
 var sentenceSkipped = false;
@@ -8,11 +10,13 @@ var sentenceSkipped = false;
 // This listener listens for TTS requests from the button press in the extension popup.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.text) {
-    chrome.storage.local.get(["rate", "volume"], (result) => {
-      const currentRate = result.rate || initialRate;
-      const currentVolume = result.volume || initialVolume;
+    chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
+      const rate = result.rate || defaultRate;
+      const volume = result.volume || defaultVolume;
+      const voice = result.voice || defaultVoice;
+
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
-      tts(currentRate, currentVolume);
+      tts(rate, volume, voice);
     });
   }
 
@@ -55,31 +59,33 @@ chrome.runtime.onInstalled.addListener(() => {
 // Handle the click event for the context menu option.
 chrome.contextMenus.onClicked.addListener((menuOption) => {
   if (menuOption.menuItemId === "ttsRightClick")
-    chrome.storage.local.get(["rate", "volume"], (result) => {
-      const currentRate = result.rate || initialRate;
-      const currentVolume = result.volume || initialVolume;
+    chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
+      const rate = result.rate || defaultRate;
+      const volume = result.volume || defaultVolume;
+      const voice = result.voice || defaultVoice;
 
       // Split text into sentences using . ! ? ; : as delimiters.
       chunks = menuOption.selectionText.match(/[^.!?;:]+[.!?;:]+/g) || [
         menuOption.selectionText,
       ];
-      tts(currentRate, currentVolume);
+      tts(rate, volume, voice);
     });
 });
 
 // This function is calling Chrome's TTS API to read the text aloud.
-function tts(rate, volume) {
+function tts(rate, volume, voice) {
   if (currentChunkIndex < chunks.length) {
     chrome.tts.speak(chunks[currentChunkIndex], {
       requiredEventTypes: ["cancelled", "end", "interrupted", "error", "word"],
       lang: lang,
       rate: rate,
       volume: volume,
+      voiceName: voice,
       onEvent: function (event) {
         if (event.type === "end") {
           currentChunkIndex++;
           if (currentChunkIndex < chunks.length) {
-            tts(rate, volume);
+            tts(rate, volume, voice);
           }
         }
         if (event.type === "cancelled" || event.type === "interrupted") {
@@ -96,12 +102,14 @@ function tts(rate, volume) {
   }
 }
 
-// This function restarts TTS with the from a different chunk.
+// This function restarts TTS from a different chunk.
 function restartTTS() {
-  chrome.storage.local.get(["rate", "volume"], (result) => {
-    const rate = result.rate || initialRate;
-    const volume = result.volume || initialVolume;
-    tts(rate, volume);
+  chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
+    const rate = result.rate || defaultRate;
+    const volume = result.volume || defaultVolume;
+    const voice = result.voice || defaultVoice;
+
+    tts(rate, volume, voice);
   });
 }
 
