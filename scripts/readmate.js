@@ -2,9 +2,8 @@ var isPaused = false;
 
 /* This is adding click functionality to the button in the in the extension popup.
   The button can show:
-    - "Read Aloud" if awaiting a click, and if there is a click, but no text was highlighted.
-    - "Pause" if the TTS is currently speaking.
-    - "Resume" if the TTS is currently paused.
+    - A play button if awaiting a click, if TTS is currently paused, or if there is a click, but no text was highlighted.
+    - A pause button  if the TTS is currently speaking.
 */
 document.getElementById("ttsBtn").addEventListener("click", () => {
   chrome.tts.isSpeaking((speaking) => {
@@ -30,7 +29,7 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
           (results) => {
             const selectedText = results && results[0] && results[0].result;
 
-            // If the text exists, show "Pause" for initial button press. else "Read Aloud"
+            // If the text exists, show the pause button for initial button press. Else show the play button.
             if (selectedText) {
               chrome.runtime.sendMessage({ text: selectedText });
               document.getElementById("ttsBtn").innerHTML =

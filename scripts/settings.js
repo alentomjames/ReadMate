@@ -6,11 +6,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const volumeSlider = document.getElementById("volume");
   const volumeValue = document.getElementById("volumeValue");
 
-  // Load saved rate from chrome.storage to display the user's currently saved rate.
+  // Populate the voice selection dropdown with available voices
+  chrome.tts.getVoices(function (voices) {
+    voices.forEach(function (voice) {
+      const option = document.createElement("option");
+      option.value = voice.voiceName;
+      option.textContent = `${voice.voiceName} (${voice.lang})`;
+      voiceSelect.appendChild(option);
+    });
+  });
+
+  // Load saved user data from chrome.storage to display the user's previous selections.
   chrome.storage.local.get(["rate", "volume", "voice"], function (result) {
     const savedRate = result.rate || 1.0; // Default rate is 1.0 if nothing is saved
     const savedVolume = result.volume || 1.0; // Default volume is 1.0 if nothing is saved
-    const savedVoice = result.voice || "";
+    const savedVoice = result.voice || ""; // Default voice is empty if nothing is saved
 
     rateSlider.value = savedRate;
     rateValue.textContent = savedRate;
@@ -37,16 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Save volume to chrome.storage when user changes slider.
   volumeSlider.addEventListener("change", function () {
     chrome.storage.local.set({ volume: parseFloat(volumeSlider.value) });
-  });
-
-  // Populate the voice dropdown with available voices
-  chrome.tts.getVoices(function (voices) {
-    voices.forEach(function (voice) {
-      const option = document.createElement("option");
-      option.value = voice.voiceName;
-      option.textContent = `${voice.voiceName} (${voice.lang})`;
-      voiceSelect.appendChild(option);
-    });
   });
 
   // Save the selected voice when the user chooses one
