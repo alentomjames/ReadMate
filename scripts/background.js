@@ -1,5 +1,6 @@
 const lang = "en-US";
 var initialRate = 1.0;
+var initialVolume = 1.0;
 var chunks = [];
 var currentChunkIndex = 0;
 var sentenceSkipped = false;
@@ -7,10 +8,11 @@ var sentenceSkipped = false;
 // This listener listens for TTS requests from the button press in the extension popup.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.text) {
-    chrome.storage.local.get(["rate"], (result) => {
+    chrome.storage.local.get(["rate", "volume"], (result) => {
       const currentRate = result.rate || initialRate;
+      const currentVolume = result.volume || initialVolume;
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
-      tts(currentRate);
+      tts(currentRate, currentVolume);
     });
   }
 
@@ -53,29 +55,31 @@ chrome.runtime.onInstalled.addListener(() => {
 // Handle the click event for the context menu option.
 chrome.contextMenus.onClicked.addListener((menuOption) => {
   if (menuOption.menuItemId === "ttsRightClick")
-    chrome.storage.local.get(["rate"], (result) => {
+    chrome.storage.local.get(["rate", "volume"], (result) => {
       const currentRate = result.rate || initialRate;
+      const currentVolume = result.volume || initialVolume;
 
       // Split text into sentences using . ! ? ; : as delimiters.
       chunks = menuOption.selectionText.match(/[^.!?;:]+[.!?;:]+/g) || [
         menuOption.selectionText,
       ];
-      tts(currentRate);
+      tts(currentRate, currentVolume);
     });
 });
 
 // This function is calling Chrome's TTS API to read the text aloud.
-function tts(rate) {
+function tts(rate, volume) {
   if (currentChunkIndex < chunks.length) {
     chrome.tts.speak(chunks[currentChunkIndex], {
       requiredEventTypes: ["cancelled", "end", "interrupted", "error", "word"],
       lang: lang,
       rate: rate,
+      volume: volume,
       onEvent: function (event) {
         if (event.type === "end") {
           currentChunkIndex++;
           if (currentChunkIndex < chunks.length) {
-            tts(rate);
+            tts(rate, volume);
           }
         }
         if (event.type === "cancelled" || event.type === "interrupted") {
@@ -94,9 +98,10 @@ function tts(rate) {
 
 // This function restarts TTS with the from a different chunk.
 function restartTTS() {
-  chrome.storage.local.get(["rate"], (result) => {
+  chrome.storage.local.get(["rate", "volume"], (result) => {
     const rate = result.rate || initialRate;
-    tts(rate);
+    const volume = result.volume || initialVolume;
+    tts(rate, volume);
   });
 }
 
