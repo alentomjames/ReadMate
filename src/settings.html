@@ -2,11 +2,29 @@
 <html></html>
 <head>
   <title>ReadMate Settings</title>
-  <link rel="stylesheet" href="readmate.css" />
+  <link rel="stylesheet" href="settings.css" />
 </head>
 <body>
   <h1>Settings</h1>
-  <p>Basic settings pop up.</p>
+
+  <div class="rateSlider">
+    <label for="rate">Speech Rate:</label>
+    <input type="range" id="rate" min="0.5" max="2.0" step="0.1" value="1.0" />
+    <span id="rateValue">1.0</span>
+  </div>
+
+  <div class="volumeSlider">
+    <label for="volume">Volume:</label>
+    <input type="range" id="volume" min="0" max="1.0" step="0.05" value="1.0" />
+    <span id="volumeValue">1.0</span>
+  </div>
+
+  <div class="voiceDropdown">
+    <label for="voice">Voice:</label>
+    <select id="voiceSelect">
+      <option value="">Default Voice</option>
+    </select>
+  </div>
 
   <script src="../scripts/settings.js"></script>
 </body>
