@@ -38,7 +38,6 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
               alert("Failed to access the active tab. Please try again.");
               return;
             }
-
             try {
               chrome.scripting.executeScript(
                 {
@@ -116,11 +115,6 @@ document.getElementById("slowBtn").addEventListener("click", () => {
           );
         } else {
           console.log("Reading speed changed to slow successfully.");
-          alert(
-            `Reading speed changed from ${response.oldRate.toFixed(
-              2
-            )} to ${response.newRate.toFixed(2)} successfully.`
-          );
         }
       }
     );
@@ -150,11 +144,6 @@ document.getElementById("fastBtn").addEventListener("click", () => {
           );
         } else {
           console.log("Reading speed changed to flow successfully.");
-          alert(
-            `Reading speed changed from ${response.oldRate.toFixed(
-              2
-            )} to ${response.newRate.toFixed(2)} successfully.`
-          );
         }
       }
     );

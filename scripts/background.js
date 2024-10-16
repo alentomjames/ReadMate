@@ -3,30 +3,19 @@ var defaultRate = 1.0;
 var defaultVolume = 1.0;
 var defaultVoice = "";
 
-var defaultRate = 1.0;
-var defaultVolume = 1.0;
-var defaultVoice = "";
-
 var chunks = [];
 var currentChunkIndex = 0;
 var sentenceSkipped = false;
-var sentenceSkipped = false;
 
 // This listener listens for TTS requests from the button press in the extension popup.
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request) => {
   if (request.text) {
     chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
       const rate = result.rate || defaultRate;
       const volume = result.volume || defaultVolume;
       const voice = result.voice || defaultVoice;
 
-    chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
-      const rate = result.rate || defaultRate;
-      const volume = result.volume || defaultVolume;
-      const voice = result.voice || defaultVoice;
-
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
-      tts(rate, volume, voice);
       tts(rate, volume, voice);
     });
   }
@@ -47,14 +36,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       restartTTS();
     }
-    return true;
   }
-  return true;
-});
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.stop) {
     resetTTS();
+    return true;
   }
 });
 
@@ -126,18 +112,8 @@ function restartTTS() {
 
 // A simple function to reset TTS and all the associated variables.
 function resetTTS() {
-  chrome.tts.isSpeaking((speaking) => {
-    if (speaking) {
-      chrome.tts.stop();
-      currentChunkIndex = 0;
-      sendResponse({
-        success: true,
-        message: "TTS has been stopped successfully.",
-      });
-    } else {
-      sendResponse({ success: false, message: "TTS was not running." });
-    }
-  });
+  chrome.tts.stop();
+  currentChunkIndex = 0;
   chrome.runtime.sendMessage({ ttsEnded: true });
   chunks = [];
 }
