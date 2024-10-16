@@ -102,9 +102,9 @@ document.getElementById("slowBtn").addEventListener("click", () => {
       { skipSentence: true, forward: false },
       (response) => {
         if (chrome.runtime.lastError) {
-          alert(
-            "Failed to change the reading speed to slow. Please try again."
-          );
+          // alert(
+          //   "Failed to change the reading speed to slow. Please try again."
+          // );
           return;
         }
 
@@ -131,9 +131,9 @@ document.getElementById("fastBtn").addEventListener("click", () => {
       { skipSentence: true, forward: true },
       (response) => {
         if (chrome.runtime.lastError) {
-          alert(
-            "Failed to change the reading speed to fast. Please try again."
-          );
+          // alert(
+          //   "Failed to change the reading speed to fast. Please try again."
+          // );
           return;
         }
 

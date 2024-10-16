@@ -72,6 +72,8 @@ chrome.contextMenus.onClicked.addListener((menuOption) => {
 // This function is calling Chrome's TTS API to read the text aloud.
 function tts(rate, volume, voice) {
   if (currentChunkIndex < chunks.length) {
+    const currentSentence = chunks[currentChunkIndex];
+    chrome.tab
     chrome.tts.speak(chunks[currentChunkIndex], {
       requiredEventTypes: ["cancelled", "end", "interrupted", "error", "word"],
       lang: lang,
@@ -79,6 +81,10 @@ function tts(rate, volume, voice) {
       volume: volume,
       voiceName: voice,
       onEvent: function (event) {
+        // Calls highlightCurrentSentence to highlight the word while its being read
+        if (event.type === "start"){
+          highlightCurrentSentence(currentSentence);
+        }
         if (event.type === "end") {
           currentChunkIndex++;
           if (currentChunkIndex < chunks.length) {
@@ -114,6 +120,52 @@ function restartTTS() {
 function resetTTS() {
   chrome.tts.stop();
   currentChunkIndex = 0;
+  resetHighlights();
   chrome.runtime.sendMessage({ ttsEnded: true });
   chunks = [];
 }
+
+let lastHighlightedSentence = null;
+
+// Function to highlight the current sentence in the tab
+function highlightCurrentSentence(currentSentence) {
+
+  if (lastHighlightedSentence === currentSentence) {
+    return;
+}
+// Update the last highlighted sentence
+lastHighlightedSentence = currentSentence;
+
+chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs && tabs.length > 0) {
+            var activeTab = tabs[0];
+            // Inject the content script if not already injected
+            chrome.scripting.executeScript(
+                {
+                    target: { tabId: activeTab.id },
+                    files: ["scripts/highlight.js"]
+                },
+                () => {
+                    if (chrome.runtime.lastError) {
+                        console.error("Error injecting content script:", chrome.runtime.lastError.message);
+                        return;
+                    }
+                    // Send the highlight message after the script is injected
+                    console.log("Sending highlight request for sentence:", currentSentence);
+                    chrome.tabs.sendMessage(activeTab.id, { action: "highlight", sentence: currentSentence });
+                }
+            );
+        }
+    });
+}
+
+  // Resets Highlights
+
+  function resetHighlights() { 
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs && tabs.length > 0) {
+        var activeTab = tabs[0];
+        chrome.tabs.sendMessage(activeTab.id, { action: "resetHighlights" });
+      }
+    });
+  }

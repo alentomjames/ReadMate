@@ -3,7 +3,10 @@
   "name": "ReadMate",
   "description": "TTS browser extension to help those with learning disabilities",
   "version": "0.0.1",
-  "permissions": ["storage", "activeTab", "scripting", "tts", "contextMenus"],
+  "permissions": ["storage", "activeTab", "scripting", "tts", "contextMenus", "tabs"],
+  "host_permissions": [
+    "*://*/*",
+    "file://*/*"],
   "background": {
     "service_worker": "scripts/background.js"
   },
@@ -21,5 +24,12 @@
     "32": "icons/readmate32.png",
     "48": "icons/readmate48.png",
     "128": "icons/readmate128.png"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["scripts/highlight.js"],
+      "run_at": "document_end"
+    }
+  ]
 }
