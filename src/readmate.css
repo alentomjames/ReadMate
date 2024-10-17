@@ -3,20 +3,20 @@
   padding: 0;
   box-sizing: border-box;
   border: none;
-  border-radius: 5px;
+  
 }
 
 body {
   font-family: "DM Sans", sans-serif;
   text-align: center;
-  width: 250px;
-  border: none;
-  border-radius: 10px;
+  width: 250;
+  
 }
 
 #controls {
   display: flex;
   justify-content: center;
+  background-color: white;
 }
 .drag-handle {
   cursor: grab;
@@ -37,32 +37,46 @@ body {
 #controls button:hover {
   color: blue;
 }
+.hide-btn { 
+  padding-left: 5px;
+  color: white;
+}
+.close-btn { 
+  font-size: 23px;
+  color: white;
+}
 #stopBtn {
   padding: 5px;
   font-size: 50px;
+  color: #396396;
 }
 
 #ttsBtn {
   padding: 5px;
   font-size: 50px;
+  color: #396396;
 }
 
 #fastBtn {
   font-size: 25px;
+  color: #396396;
 }
 
 #slowBtn {
   font-size: 25px;
+  color: #396396;
 }
 
 #topHeader {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 20px;
+  height: 35px;
+  background-color: #396396;
+  color: white;
 }
 #title {
-  margin-left: 75px;
+  margin-left: 47px;
   margin-right: 20px;
   padding-top: 10px;
   text-align: center;
@@ -72,4 +86,9 @@ body {
   padding-right: 1px;
   padding-top: 10px;
   font-size: 15px;
+  color: white;
+}
+
+#settingsBtn:hover { 
+  color: rgb(0, 153, 0);
 }

@@ -185,7 +185,7 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
         url: "src/settings.html",
         type: "popup",
         width: 400,
-        height: 300,
+        height: 200,
       },
       (window) => {
         if (chrome.runtime.lastError) {
