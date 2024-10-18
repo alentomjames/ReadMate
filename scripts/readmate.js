@@ -14,12 +14,12 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
             chrome.tts.resume();
             isPaused = false;
             document.getElementById("ttsBtn").innerHTML =
-              '<i class="bi bi-pause-circle"></i>';
+              '<i class="bi bi-pause-circle-fill" style= "color: #396396;"></i>';
           } else {
             chrome.tts.pause();
             isPaused = true;
             document.getElementById("ttsBtn").innerHTML =
-              '<i class="bi bi-play-circle"></i>';
+              '<i class="bi bi-play-circle-fill"></i>';
           }
         } catch (error) {
           console.error("Error while pausing/resuming TTS:", error);
@@ -62,7 +62,7 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
                     try {
                       chrome.runtime.sendMessage({ text: selectedText });
                       document.getElementById("ttsBtn").innerHTML =
-                        '<i class="bi bi-pause-circle"></i>';
+                        '<i class="bi bi-pause-circle-fill"></i>';
                     } catch (error) {
                       console.error("Error sending text to TTS:", error);
                       alert("Failed to send the selected text to TTS.");
@@ -72,7 +72,7 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
                       "No text selected. Please highlight some text before clicking."
                     );
                     document.getElementById("ttsBtn").innerHTML =
-                      '<i class="bi bi-play-circle"></i>';
+                      '<i class="bi bi-play-circle-fill"></i>';
                   }
                 }
               );
@@ -185,7 +185,7 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
         url: "src/settings.html",
         type: "popup",
         width: 400,
-        height: 300,
+        height: 200,
       },
       (window) => {
         if (chrome.runtime.lastError) {
@@ -260,7 +260,7 @@ function resetTTSButton() {
   try {
     const ttsBtn = document.getElementById("ttsBtn");
     if (ttsBtn) {
-      ttsBtn.innerHTML = '<i class="bi bi-play-circle"></i>';
+      ttsBtn.innerHTML = '<i class="bi bi-play-circle-fill"></i>';
       isPaused = false;
       console.log("TTS button reset to 'Read Aloud'.");
     } else {

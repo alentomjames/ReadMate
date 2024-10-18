@@ -1,1 +1,47 @@
-/* This should eventually have CSS for the settings page. */
+* { 
+  box-sizing: border-box;
+}
+body { 
+    font-family: "DM Sans", sans-serif;
+    
+    overflow: hidden; 
+}
+.options { 
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0.5em;
+}
+h1 { 
+  padding-top: 0.5em;
+  font-size: 20px;
+}
+
+
+.header { 
+  background-color: #396396;
+  width: 384px;
+  padding-left: 1em;
+  padding-bottom: 0.2em;
+  color: white;
+}
+
+#voiceSelect {
+  width: 150px;
+} 
+
+.rateSlider, .volumeSlider, .voiceDropdown {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  }
+  
+.div1 { 
+    grid-area: 1 / 1 / 2 / 2; 
+  }
+
+.div2 { 
+    grid-area: 1 / 2 / 2 / 3; 
+  }
+
