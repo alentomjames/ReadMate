@@ -3,7 +3,9 @@ var defaultRate = 1.0;
 var defaultVolume = 1.0;
 var defaultVoice = "";
 
+var fullText = "";
 var chunks = [];
+var chunkWordIndices = [];
 var currentChunkIndex = 0;
 var sentenceSkipped = false;
 
@@ -16,6 +18,17 @@ chrome.runtime.onMessage.addListener((request) => {
       const voice = result.voice || defaultVoice;
 
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
+      
+      // Build chunkWordIndices
+      chunkWordIndices = [];
+      let cumulativeWordCount = 0;
+
+      for (let i = 0; i < chunks.length; i++) {
+        chunkWordIndices.push(cumulativeWordCount);
+        const wordsInChunk = chunks[i].match(/\S+/g) || [];
+        cumulativeWordCount += wordsInChunk.length;
+      }
+      
       tts(rate, volume, voice);
     });
   }
@@ -72,17 +85,62 @@ chrome.contextMenus.onClicked.addListener((menuOption) => {
 // This function is calling Chrome's TTS API to read the text aloud.
 function tts(rate, volume, voice) {
   if (currentChunkIndex < chunks.length) {
-    chrome.tts.speak(chunks[currentChunkIndex], {
+    const chunkText = chunks[currentChunkIndex];
+    const wordsInChunk = chunkText.match(/\S+/g) || [];
+
+    // Build wordStartIndices
+    let wordStartIndices = [];
+    let currentIndex = 0;
+    wordsInChunk.forEach(word => {
+      wordStartIndices.push(currentIndex);
+      currentIndex += word.length + 1; // +1 for space or punctuation
+    });
+
+    chrome.tts.speak(chunkText, {
       requiredEventTypes: ["cancelled", "end", "interrupted", "error", "word"],
       lang: lang,
       rate: rate,
       volume: volume,
       voiceName: voice,
       onEvent: function (event) {
+        if (event.type === "word") {
+          // Find the word index in the chunk
+          let wordIndexInChunk = 0;
+          for (let i = 0; i < wordStartIndices.length; i++) {
+            if (event.charIndex >= wordStartIndices[i]) {
+              wordIndexInChunk = i;
+            } else {
+              break;
+            }
+          }
+
+          // Compute the total word index
+          let totalWordIndex = chunkWordIndices[currentChunkIndex] + wordIndexInChunk;
+
+          // Send message to content script
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0]) {
+              chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'highlightWord',
+                wordIndex: totalWordIndex,
+              });
+            }
+          });
+        }
+        // Handle other event types
         if (event.type === "end") {
           currentChunkIndex++;
           if (currentChunkIndex < chunks.length) {
             tts(rate, volume, voice);
+          } else {
+            // TTS ended, reset highlighting
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+              if (tabs[0]) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                  action: 'resetHighlighting',
+                });
+              }
+            });
           }
         }
         if (event.type === "cancelled" || event.type === "interrupted") {
@@ -116,4 +174,12 @@ function resetTTS() {
   currentChunkIndex = 0;
   chrome.runtime.sendMessage({ ttsEnded: true });
   chunks = [];
-}
+    // Send message to content script to reset highlighting
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'resetHighlighting',
+        });
+      }
+    });
+  }

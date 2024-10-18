@@ -61,6 +61,7 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
                   if (selectedText) {
                     try {
                       chrome.runtime.sendMessage({ text: selectedText });
+                      chrome.tabs.sendMessage(tabs[0].id, { action: 'startTTS', text: selectedText });
                       document.getElementById("ttsBtn").innerHTML =
                         '<i class="bi bi-pause-circle-fill"></i>';
                     } catch (error) {
