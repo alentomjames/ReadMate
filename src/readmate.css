@@ -37,13 +37,12 @@ body {
 #controls button:hover {
   color: blue;
 }
-.hide-btn { 
-  padding-left: 5px;
-  color: white;
-}
+
 .close-btn { 
   font-size: 23px;
   color: white;
+  padding-right: 5px;
+  padding-bottom: 8px;
 }
 #stopBtn {
   padding: 5px;
@@ -77,16 +76,19 @@ body {
 }
 #title {
   margin-left: 47px;
-  margin-right: 20px;
+  margin-right: 24px;
   padding-top: 10px;
   text-align: center;
   font-size: 15px;
+  padding-bottom: 5px;
 }
 #settingsBtn {
   padding-right: 1px;
   padding-top: 10px;
   font-size: 15px;
   color: white;
+  padding-right: 5px;
+  padding-bottom: 10px;
 }
 
 #settingsBtn:hover { 

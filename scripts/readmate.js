@@ -14,12 +14,12 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
             chrome.tts.resume();
             isPaused = false;
             document.getElementById("ttsBtn").innerHTML =
-              '<i class="bi bi-pause-circle"></i>';
+              '<i class="bi bi-pause-circle-fill" style= "color: #396396;"></i>';
           } else {
             chrome.tts.pause();
             isPaused = true;
             document.getElementById("ttsBtn").innerHTML =
-              '<i class="bi bi-play-circle"></i>';
+              '<i class="bi bi-play-circle-fill"></i>';
           }
         } catch (error) {
           console.error("Error while pausing/resuming TTS:", error);
