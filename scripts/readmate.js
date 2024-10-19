@@ -102,8 +102,8 @@ document.getElementById("slowBtn").addEventListener("click", () => {
       { skipSentence: true, forward: false },
       (response) => {
         if (chrome.runtime.lastError) {
-          alert(
-            "Failed to change the reading speed to slow. Please try again."
+          console.log(
+            "Failed to reverse skip. Please try again."
           );
           return;
         }
@@ -111,10 +111,10 @@ document.getElementById("slowBtn").addEventListener("click", () => {
         if (!response || !response.success) {
           console.error("Failed to process the rate change request.");
           alert(
-            "An issue occurred while adjusting the reading speed. Please try again."
+            "n issue occurred while trying to skip the sentence. Please try again."
           );
         } else {
-          console.log("Reading speed changed to slow successfully.");
+          console.log("Sentence reverse skipped successfully.");
         }
       }
     );
@@ -131,19 +131,20 @@ document.getElementById("fastBtn").addEventListener("click", () => {
       { skipSentence: true, forward: true },
       (response) => {
         if (chrome.runtime.lastError) {
+          console.error("Runtime error:", chrome.runtime.lastError);
           alert(
-            "Failed to change the reading speed to fast. Please try again."
+            "Failed to skip the current sentence. Please try again."
           );
           return;
         }
 
         if (!response || !response.success) {
-          console.error("Failed to process the rate change request.");
+          console.error("Failed to skip the sentence.");
           alert(
-            "An issue occurred while adjusting the reading speed. Please try again."
+            "An issue occurred while trying to skip the sentence. Please try again."
           );
         } else {
-          console.log("Reading speed changed to flow successfully.");
+          console.log("Sentence skipped successfully.");
         }
       }
     );
@@ -158,7 +159,7 @@ document.getElementById("stopBtn").addEventListener("click", () => {
   try {
     chrome.runtime.sendMessage({ stop: true }, (response) => {
       if (chrome.runtime.lastError) {
-        alert("Failed to stop reading the script. Please try again.");
+        console.log("Failed to stop reading the script. Please try again.");
         return;
       }
 

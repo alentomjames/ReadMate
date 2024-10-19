@@ -8,7 +8,7 @@ var currentChunkIndex = 0;
 var sentenceSkipped = false;
 
 // This listener listens for TTS requests from the button press in the extension popup.
-chrome.runtime.onMessage.addListener((request) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.text) {
     chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
       const rate = result.rate || defaultRate;
@@ -17,6 +17,8 @@ chrome.runtime.onMessage.addListener((request) => {
 
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
       tts(rate, volume, voice);
+
+      sendResponse({success: true});
     });
   }
 
@@ -36,12 +38,18 @@ chrome.runtime.onMessage.addListener((request) => {
       }
       restartTTS();
     }
+
+    sendResponse({success: true});
+    return true;
   }
 
   if (request.stop) {
     resetTTS();
     return true;
   }
+
+  sendResponse({success: false, message: "Unknown request"});
+  return false;
 });
 
 // This adds a TTS option on the context menu (right click menu) if there is highlighted text.
