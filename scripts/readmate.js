@@ -150,7 +150,7 @@ document.getElementById("fastBtn").addEventListener("click", () => {
     );
   } catch (error) {
     console.error("Unexpected error:", error);
-    alert("An unexpected error occurred. Please try again.");
+    // alert("An unexpected error occurred. Please try again.");
   }
 });
 
@@ -164,17 +164,17 @@ document.getElementById("stopBtn").addEventListener("click", () => {
       }
 
       if (!response || !response.success) {
-        alert(
+        console.log(
           "An issue occurred while trying to stop reading the script. Please try again."
         );
       } else {
         console.log("Reading has been successfully stopped.");
-        alert("The reading has stopped and reset successfully.");
+        // alert("The reading has stopped and reset successfully.");
       }
     });
   } catch (error) {
     console.error("Unexpected error:", error);
-    alert("An unexpected error occurred. Please try again.");
+    // alert("An unexpected error occurred. Please try again.");
   }
 });
 
