@@ -45,3 +45,35 @@ h1 {
     grid-area: 1 / 2 / 2 / 3; 
   }
 
+  .highlightColorPicker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    align-items: center;
+    gap: 10px;
+}
+
+#colorWheelContainer {
+    width: 100px; 
+    height: 100px; 
+    justify-self: start;
+}
+.highlightColorPicker .div1 {
+  grid-area: 1 / 1 / 2 / 2;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.highlightColorPicker .div2 {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.options label {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+
+

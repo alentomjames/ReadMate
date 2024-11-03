@@ -17,6 +17,7 @@ body {
   display: flex;
   justify-content: center;
   background-color: white;
+  align-items: center;
 }
 .drag-handle {
   cursor: grab;
@@ -31,9 +32,7 @@ body {
 .topHeaderButton:hover {
   color: red;
 }
-#controls button {
-  margin: 0;
-}
+
 #controls button:hover {
   color: blue;
 }
@@ -66,6 +65,25 @@ body {
   color: #396396;
 }
 
+#replayBtn {
+  font-size: 35px;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: white;
+  background-color: #396396;
+  border-radius: 50px;
+  width: 50px;  
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#replayBtn-container button:hover {
+  background-color: blue; 
+  color: white;
+}
+
 #topHeader {
   display: flex;
   justify-content: flex-start;
@@ -75,8 +93,8 @@ body {
   color: white;
 }
 #title {
-  margin-left: 47px;
-  margin-right: 24px;
+  margin-left: 68px;
+  margin-right: 50px;
   padding-top: 10px;
   text-align: center;
   font-size: 15px;
