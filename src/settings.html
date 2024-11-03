@@ -76,12 +76,40 @@
           </select>
         </div>
       </div>
-   
 
-    <div class="highlightColorPicker">
-      <div class="div1"><label for="colorWheelContainer">Highlight Color</label></div>
-      <div class="div2" id="colorWheelContainer"></div>
+<!--Sentence Highlight Color-->
+<div class="highlightColorPicker">
+  <div class="div1">
+      <label for="sentenceHighlightColor">Sentence Highlight Color</label>
+      <div>
+          <span id="selectedSentenceColorHex" style="padding: 2px;">#FFFFFF</span> 
+      </div>
   </div>
+  <div class="div2">
+      <div id="sentenceColorPickerContainer"> 
+          <div id="sentenceColorWheelContainer"></div> 
+          <div id="sentenceBrightnessSliderContainer"></div> 
+      </div>
+  </div>
+</div>
+
+<!--Active Word Highlight Color-->
+<div class="highlightColorPicker">
+  <div class="div1">
+      <label for="activeHighlightColor">Active Highlight Color</label>
+      <div>
+          <span id="selectedActiveColorHex" style="padding: 2px;">#FFFFFF</span> 
+      </div>
+  </div>
+  <div class="div2">
+      <div id="activeColorPickerContainer">
+          <div id="activeColorWheelContainer"></div> 
+          <div id="activeBrightnessSliderContainer"></div> 
+      </div>
+  </div>
+</div>
+
+    
 </div>
     <script src="../scripts/settings.js"></script>
   </body>

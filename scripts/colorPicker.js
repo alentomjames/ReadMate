@@ -1,13 +1,51 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let colorPicker = new iro.ColorPicker("#colorWheelContainer", {
-        width: 100,
-        color: "#f00",
-        borderWidth: 2,
-        borderColor: "#fff"
-    });
+const sentenceColorPicker = new iro.ColorPicker("#sentenceColorWheelContainer", {
+    width: 100,
+    layout: [
+        {
+            component: iro.ui.Wheel,
+            options: {},
+        },
+        {
+            component: iro.ui.Slider,
+            options: {
+                id: 'sentenceBrightness',
+                sliderType: 'value',
+                orientation: 'vertical'
+            }
+        },
+    ]
+});
 
-    colorPicker.on("color:change", function(color) {
-        document.getElementById("selectedColor").style.backgroundColor = color.hexString;
-        document.getElementById("selectedColor").textContent = color.hexString;
-    });
+sentenceColorPicker.on('color:change', function(color) {
+    const hexColor = color.hexString;
+    console.log("Selected Sentence Color (Hex):", hexColor);
+    const sentenceHexDisplay = document.getElementById("selectedSentenceColorHex");
+    sentenceHexDisplay.textContent = hexColor;
+    sentenceHexDisplay.style.backgroundColor = hexColor; 
+});
+
+const activeColorPicker = new iro.ColorPicker("#activeColorWheelContainer", {
+    width: 100,
+    layout: [
+        {
+            component: iro.ui.Wheel,
+            options: {},
+        },
+        {
+            component: iro.ui.Slider,
+            options: {
+                id: 'activeBrightness',
+                sliderType: 'value',
+                orientation: 'vertical'
+            }
+        },
+    ]
+});
+
+activeColorPicker.on('color:change', function(color) {
+    const hexColor = color.hexString;
+    console.log("Selected Active Color (Hex):", hexColor);
+    const activeHexDisplay = document.getElementById("selectedActiveColorHex");
+    activeHexDisplay.textContent = hexColor;
+    activeHexDisplay.style.backgroundColor = hexColor; 
 });
