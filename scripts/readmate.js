@@ -208,6 +208,23 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
   }
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.querySelector(".close-btn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      try {
+        // Use the window.close() method to close the popup
+        window.close();
+      } catch (error) {
+        console.error("Error while closing the popup:", error);
+        alert("An unexpected error occurred while trying to close the popup.");
+      }
+    });
+  } else {
+    console.error("Close button element not found.");
+  }
+});
+
 // This listens for requests from the background script to reset the button (can be expanded upon later)
 chrome.runtime.onMessage.addListener((request) => {
   try {
