@@ -22,6 +22,13 @@
       "128": "icons/readmate128.png"
     }
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/magnifier.js"],
+      "css": ["src/readmate.css"]
+    }
+  ],
   "icons": {
     "16": "icons/readmate16.png",
     "32": "icons/readmate32.png",
@@ -30,11 +37,11 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["scripts/iro.min.js"],
+      "resources": ["scripts/iro.min.js","scripts/magnifier.js", "src/readmate.css"],
       "matches": ["<all_urls>"]
     }
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
-  }
+"content_security_policy": {
+  "extension_pages": "script-src 'self'; object-src 'self';"
+}
 }

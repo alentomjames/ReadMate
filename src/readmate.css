@@ -112,3 +112,109 @@ body {
 #settingsBtn:hover { 
   color: rgb(0, 153, 0);
 }
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Magnifier Button */
+#magnifyBtn {
+  padding: 5px;
+  font-size: 25px;
+  color: #396396;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#magnifyBtn:hover {
+  color: blue;
+}
+
+/* Magnifier Container */
+/* Magnifier Container */
+#readmate-magnifier {
+  position: fixed;
+  width: 300px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.9); /* Slight transparency */
+  border: 2px solid #396396;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  overflow: hidden;
+  resize: both;
+  display: flex;
+  flex-direction: column; /* Stacks header and content vertically */
+}
+
+/* Magnifier Header */
+.magnifier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #396396; /* Solid color to ensure visibility */
+  color: white;
+  padding: 8px 12px;
+  cursor: move;
+  user-select: none;
+  height: 36px;
+  font-size: 16px;
+  z-index: 3; /* Ensures it is above other elements in magnifier */
+}
+
+/* Magnifier Content */
+.magnifier-content {
+  width: 100%;
+  height: calc(100% - 36px); /* Adjust height to account for header */
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Close Button */
+.close-magnifier {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.close-magnifier:hover {
+  color: #ff4444;
+}
+
+
+/* Prevent magnifier from inheriting text alignment */
+body:not(.magnifier-content) {
+  text-align: initial; /* Reset text alignment for main page */
+}
+
+/* Zoom Controls */
+.zoom-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.zoom-in, .zoom-out {
+  background-color: #396396;
+  border: 1px solid white;
+  color: white;
+  padding: 2px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.zoom-in:hover, .zoom-out:hover {
+  background-color: #ff4444;
+}
