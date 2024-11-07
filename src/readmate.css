@@ -173,7 +173,6 @@ body {
   overflow: hidden;
   position: relative;
   background: transparent;
-  pointer-events: none;
 }
 
 /* Close Button */

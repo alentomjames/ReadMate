@@ -56,26 +56,54 @@ function createMagnifier() {
     const content = magnifier.querySelector('.magnifier-content');
     let scale = 2; // Initial scale factor
 
+    // Remove pointer-events: none to allow interaction
+    // content.style.pointerEvents = 'none'; // Remove or comment out this line
+
+    // Initialize variables for dragging
+    let isPanning = false;
+    let startX, startY;
+    let offsetX = 0, offsetY = 0;
+
+    content.addEventListener('mousedown', (e) => {
+        isPanning = true;
+        startX = e.clientX - offsetX;
+        startY = e.clientY - offsetY;
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isPanning) {
+            offsetX = e.clientX - startX;
+            offsetY = e.clientY - startY;
+            updateMagnification();
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isPanning = false;
+    });
+
+    // Update magnification on scroll
+    window.addEventListener('scroll', updateMagnification);
+
     function updateMagnification() {
-      const rect = magnifier.getBoundingClientRect();
-      const x = rect.left;
-      const y = rect.top;
+        const rect = magnifier.getBoundingClientRect();
+        const scaleFactor = scale;
 
-      content.style.position = 'absolute';
-      content.style.left = `-${x}px`;
-      content.style.top = `-${y}px`;
-      content.style.width = '100vw';
-      content.style.height = '100vh';
-      content.style.transform = `scale(${scale})`;
-      content.style.transformOrigin = `${x}px ${y}px`;
-      content.style.pointerEvents = 'none';
+        content.style.position = 'absolute';
+        content.style.left = `${-rect.left * scaleFactor + offsetX}px`;
+        content.style.top = `${-rect.top * scaleFactor + offsetY}px`;
+        content.style.width = `${document.documentElement.scrollWidth * scaleFactor}px`;
+        content.style.height = `${document.documentElement.scrollHeight * scaleFactor}px`;
+        content.style.transform = `scale(${scaleFactor})`;
+        content.style.transformOrigin = 'top left';
 
-      while (content.firstChild) content.removeChild(content.firstChild);
-
-      const screenshot = document.documentElement.cloneNode(true);
-      const magnifierInClone = screenshot.querySelector('#readmate-magnifier');
-      if (magnifierInClone) magnifierInClone.remove();
-      content.appendChild(screenshot);
+        // Remove previous content and append updated content
+        while (content.firstChild) content.removeChild(content.firstChild);
+        const updatedContent = document.documentElement.cloneNode(true);
+        const magnifierInClone = updatedContent.querySelector('#readmate-magnifier');
+        if (magnifierInClone) magnifierInClone.remove();
+        content.appendChild(updatedContent);
     }
 
     // Zoom In and Zoom Out functionality
@@ -130,4 +158,3 @@ function createMagnifier() {
   
   // Initialize the button when the popup loads
   document.addEventListener('DOMContentLoaded', setupMagnifierButton);
-  
