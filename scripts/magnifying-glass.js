@@ -1,0 +1,255 @@
+// magnifying-glass.js
+
+(function() {
+    // Remove existing magnifier if present
+    const existingMagnifier = document.getElementById('_magnifier_window');
+    if (existingMagnifier) {
+      existingMagnifier.remove();
+      return;
+    }
+  
+    // Create the magnifier window
+    const magnifierWindow = document.createElement('div');
+    magnifierWindow.id = '_magnifier_window';
+    Object.assign(magnifierWindow.style, {
+      position: 'fixed',
+      top: '100px',
+      left: '100px',
+      width: '400px',
+      height: '300px',
+      border: '2px solid black',
+      borderRadius: '10px', // Rounded corners
+      overflow: 'hidden',
+      zIndex: 2147483647,
+      backgroundColor: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+    });
+  
+    // Create the header
+    const header = document.createElement('div');
+    header.id = '_magnifier_header';
+    Object.assign(header.style, {
+      backgroundColor: '#396396',
+      color: 'white',
+      padding: '5px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      cursor: 'move',
+      userSelect: 'none',
+    });
+  
+    // Title
+    const title = document.createElement('div');
+    title.innerText = 'Magnifier';
+    Object.assign(title.style, {
+      marginLeft: '10px',
+      fontSize: '16px',
+    });
+  
+    // Controls container
+    const controls = document.createElement('div');
+    Object.assign(controls.style, {
+      display: 'flex',
+      alignItems: 'center',
+    });
+  
+    // Zoom out button
+    const zoomOutButton = document.createElement('button');
+    zoomOutButton.innerText = '–';
+    Object.assign(zoomOutButton.style, {
+      background: 'none',
+      border: 'none',
+      color: 'white',
+      fontSize: '18px',
+      cursor: 'pointer',
+      marginLeft: '5px',
+    });
+    // Zoom in button
+    const zoomInButton = document.createElement('button');
+    zoomInButton.innerText = '+';
+    Object.assign(zoomInButton.style, {
+      background: 'none',
+      border: 'none',
+      color: 'white',
+      fontSize: '18px',
+      cursor: 'pointer',
+      marginLeft: '5px',
+    });
+    // Close button
+    const closeButton = document.createElement('button');
+    closeButton.innerText = '×';
+    Object.assign(closeButton.style, {
+      background: 'none',
+      border: 'none',
+      color: 'white',
+      fontSize: '18px',
+      cursor: 'pointer',
+      marginLeft: '5px',
+      marginRight: '5px',
+    });
+  
+    // Append controls
+    controls.appendChild(zoomOutButton);
+    controls.appendChild(zoomInButton);
+    controls.appendChild(closeButton);
+  
+    // Append title and controls to header
+    header.appendChild(title);
+    header.appendChild(controls);
+  
+    // Append header to magnifier window
+    magnifierWindow.appendChild(header);
+  
+    // Create the content area
+    const contentArea = document.createElement('div');
+    contentArea.id = '_magnifier_content';
+    Object.assign(contentArea.style, {
+      flex: '1',
+      position: 'relative',
+      overflow: 'hidden',
+      cursor: 'move',
+    });
+  
+    // Append content area to magnifier window
+    magnifierWindow.appendChild(contentArea);
+  
+    // Append magnifier window to body
+    document.body.appendChild(magnifierWindow);
+  
+    // Variables for dragging
+    let isDragging = false;
+    let dragStartX, dragStartY, dragStartLeft, dragStartTop;
+  
+    // Variables for resizing
+    let isResizing = false;
+    let resizeStartX, resizeStartY, resizeStartWidth, resizeStartHeight;
+  
+    // Variables for zooming
+    let zoomLevel = 2;
+  
+    // Create the magnified content
+    const magnifiedContent = document.createElement('div');
+    magnifiedContent.id = '_magnified_content';
+    Object.assign(magnifiedContent.style, {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      width: `${document.documentElement.scrollWidth}px`,
+      height: `${document.documentElement.scrollHeight}px`,
+      transformOrigin: 'top left',
+      transform: `scale(${zoomLevel})`,
+      background: 'transparent',
+    });
+  
+    // Clone the page content
+    const pageClone = document.documentElement.cloneNode(true);
+  
+    // Remove the magnifier from the cloned content to prevent recursion
+    const magnifierInClone = pageClone.querySelector('#_magnifier_window');
+    if (magnifierInClone) {
+      magnifierInClone.remove();
+    }
+  
+    // Remove scripts to prevent execution
+    pageClone.querySelectorAll('script').forEach((script) => script.remove());
+  
+    // Append cloned content to magnified content
+    magnifiedContent.appendChild(pageClone);
+  
+    // Append magnified content to content area
+    contentArea.appendChild(magnifiedContent);
+  
+    // Update the position of the magnified content
+    function updateMagnifiedContentPosition() {
+      const rect = magnifierWindow.getBoundingClientRect();
+      const offsetX = rect.left + window.scrollX;
+      const offsetY = rect.top + window.scrollY + header.offsetHeight;
+  
+      magnifiedContent.style.transform = `scale(${zoomLevel}) translate(-${offsetX / zoomLevel}px, -${offsetY / zoomLevel}px)`;
+    }
+  
+    updateMagnifiedContentPosition();
+  
+    // Event listeners for dragging the window
+    header.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      const rect = magnifierWindow.getBoundingClientRect();
+      dragStartLeft = rect.left;
+      dragStartTop = rect.top;
+      e.preventDefault();
+    });
+  
+    // Event listeners for resizing
+    // Create resize handle
+    const resizeHandle = document.createElement('div');
+    Object.assign(resizeHandle.style, {
+      position: 'absolute',
+      width: '15px',
+      height: '15px',
+      right: '0',
+      bottom: '0',
+      cursor: 'se-resize',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+    });
+    magnifierWindow.appendChild(resizeHandle);
+  
+    resizeHandle.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      resizeStartX = e.clientX;
+      resizeStartY = e.clientY;
+      const rect = magnifierWindow.getBoundingClientRect();
+      resizeStartWidth = rect.width;
+      resizeStartHeight = rect.height;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        magnifierWindow.style.left = `${dragStartLeft + dx}px`;
+        magnifierWindow.style.top = `${dragStartTop + dy}px`;
+        updateMagnifiedContentPosition();
+      } else if (isResizing) {
+        const dx = e.clientX - resizeStartX;
+        const dy = e.clientY - resizeStartY;
+        magnifierWindow.style.width = `${resizeStartWidth + dx}px`;
+        magnifierWindow.style.height = `${resizeStartHeight + dy}px`;
+        updateMagnifiedContentPosition();
+      }
+    });
+  
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      isResizing = false;
+    });
+  
+    // Zoom controls
+    zoomInButton.addEventListener('click', () => {
+      zoomLevel += 0.5;
+      magnifiedContent.style.transform = `scale(${zoomLevel})`;
+      updateMagnifiedContentPosition();
+    });
+  
+    zoomOutButton.addEventListener('click', () => {
+      zoomLevel = Math.max(1, zoomLevel - 0.5);
+      magnifiedContent.style.transform = `scale(${zoomLevel})`;
+      updateMagnifiedContentPosition();
+    });
+  
+    // Close button
+    closeButton.addEventListener('click', () => {
+      magnifierWindow.remove();
+    });
+  
+    // Update magnified content position on scroll and resize
+    window.addEventListener('scroll', updateMagnifiedContentPosition);
+    window.addEventListener('resize', updateMagnifiedContentPosition);
+  })();
+  

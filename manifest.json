@@ -8,7 +8,8 @@
     "activeTab",
     "scripting",
     "tts",
-    "contextMenus"
+    "contextMenus",
+    "tabs"
   ],
   "background": {
     "service_worker": "scripts/background.js"
@@ -28,9 +29,14 @@
     "48": "icons/readmate48.png",
     "128": "icons/readmate128.png"
   },
+  "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
-      "resources": ["scripts/iro.min.js"],
+      "resources": [
+        "scripts/jquery-3.6.0.min.js",
+        "scripts/magnifying-glass.js",
+        "styles/snapshot2.css"     
+      ],
       "matches": ["<all_urls>"]
     }
   ],

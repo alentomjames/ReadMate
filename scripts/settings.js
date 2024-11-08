@@ -55,3 +55,24 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.local.set({ voice: selectedVoice });
   });
 });
+
+// Inside DOMContentLoaded function
+const magnifierStrengthSlider = document.getElementById("magnifierStrength");
+const magnifierStrengthValue = document.getElementById("magnifierStrengthValue");
+
+// Load saved magnifier strength
+chrome.storage.local.get(["magnifierStrength"], function (result) {
+  const savedMagnifierStrength = result.magnifierStrength || 2.0; // Default is 2.0
+  magnifierStrengthSlider.value = savedMagnifierStrength;
+  magnifierStrengthValue.textContent = savedMagnifierStrength;
+});
+
+// Update displayed value when the slider changes
+magnifierStrengthSlider.addEventListener("input", function () {
+  magnifierStrengthValue.textContent = magnifierStrengthSlider.value;
+});
+
+// Save magnifier strength to storage when user changes slider
+magnifierStrengthSlider.addEventListener("change", function () {
+  chrome.storage.local.set({ magnifierStrength: parseFloat(magnifierStrengthSlider.value) });
+});

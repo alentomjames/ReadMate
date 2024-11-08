@@ -48,6 +48,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
+  if (request.action === "activateMagnifier") {
+    activateMagnifier(request.tabId);
+    sendResponse({ success: true });
+  }
+  
   sendResponse({success: false, message: "Unknown request"});
   return false;
 });
@@ -125,3 +130,59 @@ function resetTTS() {
   chrome.runtime.sendMessage({ ttsEnded: true });
   chunks = [];
 }
+
+
+function activateMagnifier(tabId) {
+  chrome.storage.local.get(
+    {
+      magnifierStrength: 2,
+      magnifierSize: 425,
+      magnifierAA: true,
+      magnifierShape: 100,
+      osFactor: 100,
+      escLimit: false,
+    },
+    (items) => {
+      chrome.tabs.captureVisibleTab({ format: "png" }, (screenshotUrl) => {
+        chrome.scripting.insertCSS(
+          {
+            target: { tabId: tabId },
+            files: ["styles/snapshot2.css"],
+          },
+          () => {
+            chrome.scripting.executeScript(
+              {
+                target: { tabId: tabId },
+                files: ["scripts/jquery-3.6.0.min.js"],
+              },
+              () => {
+                chrome.scripting.executeScript(
+                  {
+                    target: { tabId: tabId },
+                    files: ["scripts/magnifying-glass.js"],
+                  },
+                  () => {
+                    chrome.tabs.getZoom(tabId, (zoomFactor) => {
+                      chrome.tabs.sendMessage(tabId, {
+                        snapshot_url: screenshotUrl,
+                        magnifier_str: items.magnifierStrength,
+                        magnifier_size: items.magnifierSize,
+                        magnifier_aa: items.magnifierAA,
+                        magnifier_shape: items.magnifierShape,
+                        page_zoom: zoomFactor,
+                        os_compensation: items.osFactor,
+                        esc_only: items.escLimit,
+                      });
+                    });
+                  }
+                );
+              }
+            );
+          }
+        );
+      });
+    }
+  );
+}
+
+
