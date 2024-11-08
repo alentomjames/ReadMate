@@ -135,15 +135,16 @@ function resetTTS() {
 function activateMagnifier(tabId) {
   chrome.storage.local.get(
     {
-      magnifierStrength: 2,
-      magnifierSize: 425,
+      magnifierStrength: 2.0, // Default value
+      magnifierSize: 425, // You can adjust or remove if not needed
       magnifierAA: true,
-      magnifierShape: 100,
+      magnifierShape: 0, // For rectangle
       osFactor: 100,
       escLimit: false,
     },
     (items) => {
       chrome.tabs.captureVisibleTab({ format: "png" }, (screenshotUrl) => {
+
         chrome.scripting.insertCSS(
           {
             target: { tabId: tabId },
@@ -184,5 +185,4 @@ function activateMagnifier(tabId) {
     }
   );
 }
-
 

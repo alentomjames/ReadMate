@@ -67,6 +67,7 @@
       cursor: 'pointer',
       marginLeft: '5px',
     });
+  
     // Zoom in button
     const zoomInButton = document.createElement('button');
     zoomInButton.innerText = '+';
@@ -78,6 +79,7 @@
       cursor: 'pointer',
       marginLeft: '5px',
     });
+  
     // Close button
     const closeButton = document.createElement('button');
     closeButton.innerText = '×';
@@ -110,7 +112,7 @@
       flex: '1',
       position: 'relative',
       overflow: 'hidden',
-      cursor: 'move',
+      cursor: 'grab', // Indicate panning is available
     });
   
     // Append content area to magnifier window
@@ -119,13 +121,19 @@
     // Append magnifier window to body
     document.body.appendChild(magnifierWindow);
   
-    // Variables for dragging
+    // Variables for dragging the window
     let isDragging = false;
     let dragStartX, dragStartY, dragStartLeft, dragStartTop;
   
     // Variables for resizing
     let isResizing = false;
     let resizeStartX, resizeStartY, resizeStartWidth, resizeStartHeight;
+  
+    // Variables for panning
+    let isPanning = false;
+    let panStartX, panStartY;
+    let panOffsetX = 0;
+    let panOffsetY = 0;
   
     // Variables for zooming
     let zoomLevel = 2;
@@ -142,6 +150,7 @@
       transformOrigin: 'top left',
       transform: `scale(${zoomLevel})`,
       background: 'transparent',
+      cursor: 'grab', // Indicate panning is available
     });
   
     // Clone the page content
@@ -165,15 +174,15 @@
     // Update the position of the magnified content
     function updateMagnifiedContentPosition() {
       const rect = magnifierWindow.getBoundingClientRect();
-      const offsetX = rect.left + window.scrollX;
-      const offsetY = rect.top + window.scrollY + header.offsetHeight;
+      const offsetX = rect.left + window.scrollX + panOffsetX;
+      const offsetY = rect.top + window.scrollY + header.offsetHeight + panOffsetY;
   
       magnifiedContent.style.transform = `scale(${zoomLevel}) translate(-${offsetX / zoomLevel}px, -${offsetY / zoomLevel}px)`;
     }
   
     updateMagnifiedContentPosition();
   
-    // Event listeners for dragging the window
+    // Event listeners for dragging the magnifier window
     header.addEventListener('mousedown', (e) => {
       isDragging = true;
       dragStartX = e.clientX;
@@ -209,6 +218,15 @@
       e.stopPropagation();
     });
   
+    // Event listeners for panning within the content area
+    magnifiedContent.addEventListener('mousedown', (e) => {
+      isPanning = true;
+      panStartX = e.clientX;
+      panStartY = e.clientY;
+      magnifiedContent.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+  
     document.addEventListener('mousemove', (e) => {
       if (isDragging) {
         const dx = e.clientX - dragStartX;
@@ -222,12 +240,24 @@
         magnifierWindow.style.width = `${resizeStartWidth + dx}px`;
         magnifierWindow.style.height = `${resizeStartHeight + dy}px`;
         updateMagnifiedContentPosition();
+      } else if (isPanning) {
+        const dx = e.clientX - panStartX;
+        const dy = e.clientY - panStartY;
+        panOffsetX += -dx * (1 / zoomLevel);
+        panOffsetY += -dy * (1 / zoomLevel);
+        panStartX = e.clientX;
+        panStartY = e.clientY;
+        updateMagnifiedContentPosition();
       }
     });
   
     document.addEventListener('mouseup', () => {
       isDragging = false;
       isResizing = false;
+      if (isPanning) {
+        isPanning = false;
+        magnifiedContent.style.cursor = 'grab';
+      }
     });
   
     // Zoom controls
@@ -246,6 +276,8 @@
     // Close button
     closeButton.addEventListener('click', () => {
       magnifierWindow.remove();
+      window.removeEventListener('scroll', updateMagnifiedContentPosition);
+      window.removeEventListener('resize', updateMagnifiedContentPosition);
     });
   
     // Update magnified content position on scroll and resize
