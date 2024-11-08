@@ -16,7 +16,6 @@ h1 {
   font-size: 20px;
 }
 
-
 .header { 
   background-color: #396396;
   width: 500px;
@@ -32,59 +31,38 @@ h1 {
 .rateSlider, .volumeSlider, .voiceDropdown {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-  }
-  
-.div1 { 
-    grid-area: 1 / 1 / 2 / 2; 
-  }
-
-.div2 { 
-    grid-area: 1 / 2 / 2 / 3; 
-  }
-  .highlightColorPicker {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: center;
-    gap: 10px;
-    justify-items: baseline;
-  }
-  
-  #colorPickerContainer {
-    display: flex;
-    align-items: center; 
-  }
-  
-  #brightnessSliderContainer {
-    width: 20px; 
-    height: 150px;
-    margin-left: 10px;
 }
-
-
-.colorWheelContainer {
-    display: flex;
-    align-items: center; 
+.highlightColorPicker {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  justify-items: start;
 }
 
 .highlightColorPicker .div1 {
-  grid-area: 1 / 1 / 2 / 2;
-
+  display: flex;
+  flex-direction: column;
 }
 
 
-.highlightColorPicker .div2 {
-  grid-area: 1 / 2 / 2 / 3;
-}
-
-.options label {
+#colorWheelContainer {
+  grid-column: 2; 
+  grid-row: 1 / span 2; 
   display: flex;
   align-items: center;
-  height: 100%;
+  justify-content: center;
 }
 
-
-
-
+button { 
+  background-color: #396396;
+  color: white;
+  border: none;
+  opacity: 0.8;
+  transition: 0.3s;
+  border: none;
+  text-decoration: none; 
+  border-radius: 10px;
+}
+button:hover {opacity: 1} 
