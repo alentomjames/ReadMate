@@ -100,7 +100,7 @@ body {
   font-size: 15px;
   padding-bottom: 5px;
 }
-#settingsBtn {
+#settingsBtn #magnifyBtn{
   padding-right: 1px;
   padding-top: 10px;
   font-size: 15px;
@@ -109,6 +109,7 @@ body {
   padding-bottom: 10px;
 }
 
-#settingsBtn:hover { 
+
+#settingsBtn:hover #magnifyBtn:hover{ 
   color: rgb(0, 153, 0);
 }
