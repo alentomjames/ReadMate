@@ -1,51 +1,51 @@
-const sentenceColorPicker = new iro.ColorPicker("#sentenceColorWheelContainer", {
-    width: 100,
-    layout: [
-        {
-            component: iro.ui.Wheel,
-            options: {},
-        },
-        {
-            component: iro.ui.Slider,
-            options: {
-                id: 'sentenceBrightness',
-                sliderType: 'value',
-                orientation: 'vertical'
-            }
-        },
-    ]
-});
+document.addEventListener("DOMContentLoaded", function () {
+    const colorPicker = new iro.ColorPicker("#colorWheelContainer", {
+        width: 100,
+        layout: [
+            { component: iro.ui.Wheel, options: {} },
+            { component: iro.ui.Slider, options: { sliderType: 'value', layoutDirection: 'vertical'} },
+        ],
+        layoutDirection: "horizontal",
+    });
 
-sentenceColorPicker.on('color:change', function(color) {
-    const hexColor = color.hexString;
-    console.log("Selected Sentence Color (Hex):", hexColor);
+    let sentenceHex = "#FFFFFF"; 
+    let activeHex = "#FFFFFF"; 
+
     const sentenceHexDisplay = document.getElementById("selectedSentenceColorHex");
-    sentenceHexDisplay.textContent = hexColor;
-    sentenceHexDisplay.style.backgroundColor = hexColor; 
-});
-
-const activeColorPicker = new iro.ColorPicker("#activeColorWheelContainer", {
-    width: 100,
-    layout: [
-        {
-            component: iro.ui.Wheel,
-            options: {},
-        },
-        {
-            component: iro.ui.Slider,
-            options: {
-                id: 'activeBrightness',
-                sliderType: 'value',
-                orientation: 'vertical'
-            }
-        },
-    ]
-});
-
-activeColorPicker.on('color:change', function(color) {
-    const hexColor = color.hexString;
-    console.log("Selected Active Color (Hex):", hexColor);
     const activeHexDisplay = document.getElementById("selectedActiveColorHex");
-    activeHexDisplay.textContent = hexColor;
-    activeHexDisplay.style.backgroundColor = hexColor; 
+
+    if (sentenceHexDisplay) {
+        sentenceHexDisplay.textContent = sentenceHex;
+        sentenceHexDisplay.style.backgroundColor = sentenceHex;
+    }
+
+    if (activeHexDisplay) {
+        activeHexDisplay.textContent = activeHex;
+        activeHexDisplay.style.backgroundColor = activeHex;
+    }
+
+    colorPicker.on('color:change', function (color) {
+        sentenceHex = color.hexString; 
+        activeHex = color.hexString; 
+    });
+
+    const editSentenceColorBtn = document.getElementById("editSentenceColorBtn");
+    if (editSentenceColorBtn) {
+        editSentenceColorBtn.addEventListener("click", function () {
+            if (sentenceHexDisplay) {
+                sentenceHexDisplay.textContent = sentenceHex; 
+                sentenceHexDisplay.style.backgroundColor = sentenceHex; 
+            }
+        });
+    }
+
+    const editActiveColorBtn = document.getElementById("editActiveColorBtn");
+    if (editActiveColorBtn) {
+        editActiveColorBtn.addEventListener("click", function () {
+            if (activeHexDisplay) {
+                activeHexDisplay.textContent = activeHex; 
+                activeHexDisplay.style.backgroundColor = activeHex; 
+            }
+        });
+    }
 });
