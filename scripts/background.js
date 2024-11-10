@@ -55,7 +55,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
-  sendResponse({ success: false, message: "Unknown request" });
+
+  if (request.action === "activateMagnifier") {
+    activateMagnifier(request.tabId);
+    sendResponse({ success: true });
+  }
+  
+  sendResponse({success: false, message: "Unknown request"});
   return false;
 });
 
@@ -134,3 +140,59 @@ function resetTTS() {
   chrome.runtime.sendMessage({ ttsEnded: true });
   chunks = [];
 }
+
+
+function activateMagnifier(tabId) {
+  chrome.storage.local.get(
+    {
+      magnifierStrength: 2.0, // Default value
+      magnifierSize: 425, // You can adjust or remove if not needed
+      magnifierAA: true,
+      magnifierShape: 0, // For rectangle
+      osFactor: 100,
+      escLimit: false,
+    },
+    (items) => {
+      chrome.tabs.captureVisibleTab({ format: "png" }, (screenshotUrl) => {
+
+        chrome.scripting.insertCSS(
+          {
+            target: { tabId: tabId },
+            files: ["styles/snapshot2.css"],
+          },
+          () => {
+            chrome.scripting.executeScript(
+              {
+                target: { tabId: tabId },
+                files: ["scripts/jquery-3.6.0.min.js"],
+              },
+              () => {
+                chrome.scripting.executeScript(
+                  {
+                    target: { tabId: tabId },
+                    files: ["scripts/magnifying-glass.js"],
+                  },
+                  () => {
+                    chrome.tabs.getZoom(tabId, (zoomFactor) => {
+                      chrome.tabs.sendMessage(tabId, {
+                        snapshot_url: screenshotUrl,
+                        magnifier_str: items.magnifierStrength,
+                        magnifier_size: items.magnifierSize,
+                        magnifier_aa: items.magnifierAA,
+                        magnifier_shape: items.magnifierShape,
+                        page_zoom: zoomFactor,
+                        os_compensation: items.osFactor,
+                        esc_only: items.escLimit,
+                      });
+                    });
+                  }
+                );
+              }
+            );
+          }
+        );
+      });
+    }
+  );
+}
+
