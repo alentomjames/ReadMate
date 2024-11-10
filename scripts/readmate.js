@@ -1,22 +1,20 @@
 var isPaused = false;
+
+// added light-dark mode 
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 
-// Load saved theme preference on page load
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme") || "light";
   document.body.classList.add(`${savedTheme}-mode`);
   themeToggleBtn.innerHTML = savedTheme === "dark" ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
 });
 
-// Toggle theme on button click
 themeToggleBtn.addEventListener("click", () => {
   const isDarkMode = document.body.classList.toggle("dark-mode");
   document.body.classList.toggle("light-mode", !isDarkMode);
 
-  // Update the icon in the theme toggle button
   themeToggleBtn.innerHTML = isDarkMode ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
 
-  // Save the user's theme preference
   localStorage.setItem("theme", isDarkMode ? "dark" : "light");
 });
 
