@@ -3,14 +3,8 @@
   "name": "ReadMate",
   "description": "TTS browser extension to help those with learning disabilities",
   "version": "0.0.1",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting",
-    "tts",
-    "contextMenus",
-    "tabs"
-  ],
+  "permissions": ["storage", "activeTab", "scripting", "tts", "contextMenus"],
+
   "background": {
     "service_worker": "scripts/background.js"
   },
@@ -33,6 +27,10 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "scripts/iro.min.js",
+        "libs/pdf.js",
+        "libs/pdf.worker.js",
+        "libs/mammoth.browser.min.js"
         "scripts/jquery-3.6.0.min.js",
         "scripts/magnifying-glass.js",
         "styles/snapshot2.css"     

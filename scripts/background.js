@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chunks = request.text.match(/[^.!?;:]+[.!?;:]+/g) || [request.text]; // Split text into sentences using . ! ? ; : as delimiters.
       tts(rate, volume, voice);
 
-      sendResponse({success: true});
+      sendResponse({ success: true });
     });
   }
 
@@ -38,8 +38,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       restartTTS();
     }
+    sendResponse({ success: true });
+    return true;
+  }
 
-    sendResponse({success: true});
+  if (request.repeatSentence) {
+    sentenceSkipped = true;
+    chrome.tts.stop();
+    restartTTS();
+    sendResponse({ success: true });
     return true;
   }
 
@@ -47,6 +54,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     resetTTS();
     return true;
   }
+
 
   if (request.action === "activateMagnifier") {
     activateMagnifier(request.tabId);
@@ -96,6 +104,8 @@ function tts(rate, volume, voice) {
           currentChunkIndex++;
           if (currentChunkIndex < chunks.length) {
             tts(rate, volume, voice);
+          } else {
+            chrome.runtime.sendMessage({ ttsEnded: true });
           }
         }
         if (event.type === "cancelled" || event.type === "interrupted") {
