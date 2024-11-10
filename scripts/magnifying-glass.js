@@ -165,8 +165,11 @@
     // Remove scripts to prevent execution
     pageClone.querySelectorAll('script').forEach((script) => script.remove());
   
+     // **Sanitize the cloned content using DOMPurify**
+    const sanitizedContent = DOMPurify.sanitize(pageClone.outerHTML, { RETURN_DOM: true });
+
     // Append cloned content to magnified content
-    magnifiedContent.appendChild(pageClone);
+    magnifiedContent.appendChild(sanitizedContent);
   
     // Append magnified content to content area
     contentArea.appendChild(magnifiedContent);

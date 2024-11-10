@@ -27,11 +27,12 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "libs/purify.min.js",
         "scripts/iro.min.js",
         "libs/pdf.js",
         "libs/pdf.worker.js",
-        "libs/mammoth.browser.min.js"
-        "scripts/jquery-3.6.0.min.js",
+        "libs/mammoth.browser.min.js",
+        "libs/jquery-3.6.0.min.js",
         "scripts/magnifying-glass.js",
         "styles/snapshot2.css"     
       ],
