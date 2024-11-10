@@ -38,7 +38,6 @@ body.dark-mode {
 #controls {
   display: flex;
   justify-content: center;
-  /* background-color: white; */
   align-items: center;
 }
 .drag-handle {
@@ -134,6 +133,7 @@ body.dark-mode {
   background-color: #396396;
   color: white;
 }
+
 #title {
   margin-left: 68px;
   margin-right: 50px;
@@ -142,6 +142,16 @@ body.dark-mode {
   font-size: 15px;
   padding-bottom: 5px;
 }
+
+/* Title Text Color for Light and Dark Mode */
+.light-mode #title {
+  color: white; /* White text in light mode */
+}
+
+.dark-mode #title {
+  color: black; /* Black text in dark mode */
+}
+
 #settingsBtn {
   padding-right: 1px;
   padding-top: 10px;
@@ -179,7 +189,6 @@ body.dark-mode {
 .dark-mode .upload-button i {
   color: black; 
 }
-
 
 .upload-button:hover {
   background-color: blue;
