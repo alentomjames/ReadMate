@@ -11,12 +11,29 @@ body {
   width: 250;
 }
 
+body.light-mode {
+  background-color: white;
+  color: black;
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
 #controls {
   display: flex;
   justify-content: center;
   background-color: white;
   align-items: center;
 }
+
+/* New: Dark mode styling for controls */
+#controls.dark-mode {
+  background-color: #333;
+  color: #f0f0f0;
+}
+
 .drag-handle {
   cursor: grab;
 }
@@ -29,8 +46,13 @@ body {
   outline: none;
   border: none;
 }
+
 .topHeaderButton:hover {
   color: red;
+}
+
+.topHeaderButton.dark-mode:hover {
+  color: #ff6666;
 }
 
 #controls button:hover {
@@ -50,6 +72,14 @@ body {
   color: #396396;
   outline: none;
   border: none;
+}
+
+#stopBtn.dark-mode,
+#ttsBtn.dark-mode,
+#fastBtn.dark-mode,
+#slowBtn.dark-mode,
+#settingsBtn.dark-mode {
+  color: #f0f0f0;
 }
 
 #fastBtn,
@@ -91,6 +121,14 @@ body {
   color: white;
 }
 
+#replayBtn-container.dark-mode {
+  background-color: #444;
+}
+
+#replayBtn-container.dark-mode:hover {
+  background-color: #555;
+}
+
 #topHeader {
   display: flex;
   justify-content: flex-start;
@@ -99,6 +137,12 @@ body {
   background-color: #396396;
   color: white;
 }
+
+#topHeader.dark-mode {
+  background-color: #333;
+  color: #ffffff;
+}
+
 #title {
   margin-left: 68px;
   margin-right: 50px;
