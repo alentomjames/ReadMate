@@ -143,14 +143,13 @@ body.dark-mode {
   padding-bottom: 5px;
 }
 
-/* Title Text Color for Light and Dark Mode */
-.light-mode #title {
-  color: white; /* White text in light mode */
+/* .light-mode #title {
+  color: white; 
 }
 
 .dark-mode #title {
-  color: black; /* Black text in dark mode */
-}
+  color: black; 
+} */
 
 #settingsBtn {
   padding-right: 1px;
