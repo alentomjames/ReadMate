@@ -22,18 +22,17 @@ body.dark-mode {
 }
 
 #themeToggleBtn {
-  background-color: transparent; /* Transparent to fit in any background */
-  color: inherit; /* Inherits the text color based on mode */
-  border: none; /* Remove default button border */
-  font-size: 16px; /* Adjust font size if needed */
+  background-color: transparent; 
+  color: inherit; 
+  border: none; 
+  font-size: 16px; 
   cursor: pointer;
   padding: 5px;
   transition: color 0.3s ease;
 }
 
-/* Optional: Hover effect for toggle button */
 #themeToggleBtn:hover {
-  color: #ffcc00; /* Highlight color for toggle button on hover */
+  color: #ffcc00;
 }
 
 #controls {
@@ -68,6 +67,7 @@ body.dark-mode {
   padding-right: 5px;
   padding-bottom: 8px;
 }
+
 #stopBtn,
 #ttsBtn {
   padding: 5px;
@@ -111,20 +111,19 @@ body.dark-mode {
 }
 
 .light-mode #replayBtn {
-  color: white; /* White color for icon in light mode */
+  color: white;
 }
 
 .dark-mode #replayBtn {
-  color: black; /* Black color for icon in dark mode */
+  color: black;
 }
 
 #replayBtn-container:hover {
-  background-color: blue; /* Darker blue on hover */
+  background-color: blue;
 }
 
-/* No hover effect on #replayBtn itself */
 #replayBtn:hover {
-  color: inherit; /* Keeps color unchanged on hover */
+  color: inherit; 
 }
 
 #topHeader {
@@ -174,11 +173,11 @@ body.dark-mode {
 }
 
 .light-mode .upload-button i {
-  color: white; /* White color for icon in light mode */
+  color: white;
 }
 
 .dark-mode .upload-button i {
-  color: black; /* Black color for icon in dark mode */
+  color: black; 
 }
 
 
@@ -187,8 +186,8 @@ body.dark-mode {
 }
 
 .upload-button i {
-  font-size: 24px; /* Adjust icon size as needed */
-  color: white; /* Ensures icon is visible within the button */
+  font-size: 24px; 
+  color: white; 
 }
 
 #fileUpload {
