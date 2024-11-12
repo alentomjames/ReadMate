@@ -117,13 +117,13 @@ body.dark-mode {
   color: black;
 }
 
-#replayBtn-container:hover {
+/* #replayBtn-container:hover {
   background-color: blue;
 }
 
 #replayBtn:hover {
   color: inherit; 
-}
+} */
 
 #topHeader {
   display: flex;
