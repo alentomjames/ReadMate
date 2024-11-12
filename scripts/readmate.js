@@ -4,9 +4,11 @@ var isPaused = false;
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const savedTheme = localStorage.getItem("theme") || "light";
-  document.body.classList.add(`${savedTheme}-mode`);
-  themeToggleBtn.innerHTML = savedTheme === "dark" ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+  chrome.storage.local.get(["theme"], (result) => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.body.classList.add(`${savedTheme}-mode`);
+    themeToggleBtn.innerHTML = savedTheme === "dark" ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+  });
 });
 
 themeToggleBtn.addEventListener("click", () => {
@@ -15,7 +17,7 @@ themeToggleBtn.addEventListener("click", () => {
 
   themeToggleBtn.innerHTML = isDarkMode ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
 
-  localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  chrome.storage.local.set({"theme": isDarkMode ? "dark" : "light"});
 });
 
 /* This is adding click functionality to the button in the in the extension popup.
