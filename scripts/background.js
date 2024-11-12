@@ -98,12 +98,16 @@ function tts(rate, volume, voice) {
           // First remove any existing highlights
           await chrome.tabs.sendMessage(tabs[0].id, {
             action: "removeHighlights",
+          }).catch((error) => {
+            console.warn("Could not remove highlights:", error);
           });
 
           // Then add new highlight
           await chrome.tabs.sendMessage(tabs[0].id, {
             action: "highlightChunk",
             chunk: currentChunk,
+          }).catch((error) => {
+            console.warn("Could not add highlight. Highlights may not work on this page.", error);
           });
 
           // Now speak the text
@@ -129,6 +133,8 @@ function tts(rate, volume, voice) {
                   // Clean up at the end
                   chrome.tabs.sendMessage(tabs[0].id, {
                     action: "removeHighlights",
+                  }).catch((error) => {
+                    console.warn("Could not remove highlights at end:", error);
                   });
                   resetTTS();
                 }
@@ -138,6 +144,8 @@ function tts(rate, volume, voice) {
                   action: "highlightWord",
                   charIndex: event.charIndex,
                   length: event.length,
+                }).catch((error) => {
+                  console.warn("Could not highlight word:", error);
                 });
               }
               if (event.type === "cancelled" || event.type === "interrupted") {
@@ -145,6 +153,8 @@ function tts(rate, volume, voice) {
                   resetTTS();
                   chrome.tabs.sendMessage(tabs[0].id, {
                     action: "removeHighlights",
+                  }).catch((error) => {
+                    console.warn("Could not remove highlights after cancel/interrupted:", error);
                   });
                 }
               }
@@ -152,6 +162,8 @@ function tts(rate, volume, voice) {
                 console.error("TTS Error:", event.errorMessage);
                 chrome.tabs.sendMessage(tabs[0].id, {
                   action: "removeHighlights",
+                }).catch((error) => {
+                  console.warn("Could not remove highlights after TTS error:", error);
                 });
               }
               sentenceSkipped = false;
