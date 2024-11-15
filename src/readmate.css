@@ -109,7 +109,7 @@ body.dark-mode {
   transition: background-color 0.3s ease;
 }
 
-.light-mode #replayBtn {
+.light-mode #replayBtn-container:hover #replayBtn {
   color: white;
 }
 
@@ -117,13 +117,14 @@ body.dark-mode {
   color: black;
 }
 
-/* #replayBtn-container:hover {
+#replayBtn-container:hover{
   background-color: blue;
+  color:white;
 }
 
-#replayBtn:hover {
-  color: inherit; 
-} */
+#replayBtn-container:hover #replayBtn {
+  color: black; 
+}
 
 #topHeader {
   display: flex;
