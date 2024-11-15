@@ -1,5 +1,13 @@
 // DOMContentLoaded ensures the page loads before we implement the javascript
 document.addEventListener("DOMContentLoaded", function () {
+
+  // Apply the stored theme mode
+  chrome.storage.local.get(["theme"], (result) => {
+    const savedTheme = result.theme || "light";
+    document.body.classList.add(`${savedTheme}-mode`);
+  });
+
+
   const rateSlider = document.getElementById("rate");
   const rateValue = document.getElementById("rateValue");
 
