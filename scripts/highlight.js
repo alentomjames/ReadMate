@@ -15,6 +15,67 @@ $(document).ready(function () {
   let activeWordElement = null; // Track the currently highlighted word
   let originalChunkText = "";
 
+  let ttsInProgress = false;
+  let pendingColorUpdates = {};
+
+  // Variables to hold the highlight colors
+  let sentenceColor = "rgba(255, 255, 0, 0.3)"; // default color
+  let activeWordColor = "rgba(255, 0, 0, 0.6)"; // default color
+
+  // Load colors from chrome.storage.local
+  chrome.storage.local.get(['sentenceColor', 'activeColor'], function(result) {
+    if (result.sentenceColor) {
+      sentenceColor = result.sentenceColor;
+    }
+    if (result.activeColor) {
+      activeWordColor = result.activeColor;
+    }
+    console.log('Loaded colors:', sentenceColor, activeWordColor);
+  });
+
+// Listen for storage changes
+chrome.storage.onChanged.addListener(function(changes, areaName) {
+  if (areaName === 'local') {
+    if (ttsInProgress) {
+      console.log('TTS in progress, deferring color updates until TTS ends.');
+      if (changes.sentenceColor) {
+        pendingColorUpdates.sentenceColor = changes.sentenceColor.newValue;
+      }
+      if (changes.activeColor) {
+        pendingColorUpdates.activeColor = changes.activeColor.newValue;
+      }
+    } else {
+      if (changes.sentenceColor) {
+        sentenceColor = changes.sentenceColor.newValue;
+        console.log('Updated sentence color to:', sentenceColor);
+        // Update existing highlights
+        $(".readmate-chunk-highlight").css("background-color", sentenceColor);
+      }
+      if (changes.activeColor) {
+        activeWordColor = changes.activeColor.newValue;
+        console.log('Updated active word color to:', activeWordColor);
+        // Update existing active word highlight
+        $(".readmate-word-highlight").css("background-color", activeWordColor);
+      }
+    }
+  }
+});
+
+// Function to apply pending color updates after TTS ends
+function applyPendingColorUpdates() {
+  if (pendingColorUpdates.sentenceColor) {
+    sentenceColor = pendingColorUpdates.sentenceColor;
+    console.log('Applying pending sentence color:', sentenceColor);
+    $(".readmate-chunk-highlight").css("background-color", sentenceColor);
+  }
+  if (pendingColorUpdates.activeColor) {
+    activeWordColor = pendingColorUpdates.activeColor;
+    console.log('Applying pending active word color:', activeWordColor);
+    $(".readmate-word-highlight").css("background-color", activeWordColor);
+  }
+  pendingColorUpdates = {};
+}
+
   // Function to highlight the whole chunk (e.g., sentence or phrase)
   function highlightChunk() {
     console.log("Attempting to highlight chunk:", currentChunk);
@@ -55,7 +116,7 @@ $(document).ready(function () {
           const highlightElement = $("<span>", {
             class: "readmate-chunk-highlight",
             text: match,
-            css: { backgroundColor: "rgba(200, 200, 0, 0.3)" },
+            css: { backgroundColor: sentenceColor },
           });
 
           const replacement = $("<span>").append(
@@ -83,7 +144,7 @@ $(document).ready(function () {
     $(".readmate-chunk-highlight").text(originalChunkText);
 
     if (activeWordElement) {
-      $(activeWordElement).css("background-color", "rgba(255, 255, 0, 0.3)");
+      $(activeWordElement).css("background-color", sentenceColor);
     }
 
     $(".readmate-chunk-highlight")
@@ -103,7 +164,7 @@ $(document).ready(function () {
           const wordHighlightElement = $("<span>", {
             class: "readmate-word-highlight",
             text: match,
-            css: { backgroundColor: "rgba(255, 0, 0, 0.6)" },
+            css: { backgroundColor: activeWordColor },
           });
 
           const replacement = $("<span>").append(
@@ -140,7 +201,6 @@ $(document).ready(function () {
     .text(
       `
         .readmate-chunk-highlight {
-            background-color: rgba(255, 255, 0, 0.3) !important;
             display: inline !important;
             padding: 0 !important;
             margin: 0 !important;
@@ -150,15 +210,22 @@ $(document).ready(function () {
             z-index: 9999 !important;
         }
         .readmate-word-highlight {
-            background-color: rgba(255, 0, 0, 0.6);
         }
       `
     )
     .appendTo("head");
 
   // Message listener to handle highlighting based on chunk and word events
-  chrome.runtime.onMessage.addListener((request, sendResponse) => {
-    if (request.action === "highlightChunk") {
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "ttsStatus") {
+      if (request.status === "started") {
+        ttsInProgress = true;
+      } else if (request.status === "ended") {
+        ttsInProgress = false;
+        applyPendingColorUpdates();
+      }
+      sendResponse({ success: true });
+    } else if (request.action === "highlightChunk") {
       currentChunk = request.chunk;
       highlightChunk();
       sendResponse({ success: true });

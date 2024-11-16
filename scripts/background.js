@@ -86,6 +86,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return false;
 });
 
+function sendTTSStatus(status) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    if (tabs[0]) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: "ttsStatus",
+        status: status,
+      });
+    }
+  });
+}
+
 function tts(rate, volume, voice) {
   chrome.tts.stop();
 
@@ -101,27 +112,6 @@ function tts(rate, volume, voice) {
           console.error("No active tab found");
           return;
         }
-        
-     chrome.tts.speak(chunks[currentChunkIndex], {
-      requiredEventTypes: ["cancelled", "end", "interrupted", "error", "word"],
-      lang: lang,
-      rate: rate,
-      volume: volume,
-      voiceName: voice,
-      onEvent: function (event) {
-        if (event.type === "end") {
-          currentChunkIndex++;
-          if (currentChunkIndex < chunks.length) {
-            tts(rate, volume, voice);
-          } else {
-            chrome.runtime.sendMessage({ ttsEnded: true });
-          }
-        }
-        if (event.type === "cancelled" || event.type === "interrupted") {
-          if (!sentenceSkipped) {
-            resetTTS();
-          }
-        }
 
         try {
           // First remove any existing highlights
@@ -134,6 +124,8 @@ function tts(rate, volume, voice) {
             action: "highlightChunk",
             chunk: currentChunk,
           });
+
+          sendTTSStatus("started");
 
           // Now speak the text
           chrome.tts.speak(currentChunk, {
@@ -159,6 +151,7 @@ function tts(rate, volume, voice) {
                   chrome.tabs.sendMessage(tabs[0].id, {
                     action: "removeHighlights",
                   });
+                  sendTTSStatus("ended");
                   resetTTS();
                 }
               }
@@ -175,6 +168,7 @@ function tts(rate, volume, voice) {
                   chrome.tabs.sendMessage(tabs[0].id, {
                     action: "removeHighlights",
                   });
+                  sendTTSStatus("ended");
                 }
               }
               if (event.type === "error") {
@@ -189,6 +183,7 @@ function tts(rate, volume, voice) {
         } catch (error) {
           console.error("Error in TTS process:", error);
           resetTTS();
+          sendTTSStatus("ended");
         }
       }
     );
@@ -210,6 +205,8 @@ function resetTTS() {
   currentChunkIndex = 0;
   chrome.runtime.sendMessage({ ttsEnded: true });
   chunks = [];
+  sendTTSStatus("ended");
+
 }
 
 // Context menu setup
