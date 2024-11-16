@@ -4,9 +4,13 @@
   "description": "TTS browser extension to help those with learning disabilities",
   "version": "0.0.1",
   "permissions": ["storage", "activeTab", "scripting", "tts", "contextMenus"],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "scripts/background.js"
   },
+  
   "action": {
     "default_popup": "src/readmate.html",
     "default_icon": {
@@ -22,6 +26,16 @@
     "48": "icons/readmate48.png",
     "128": "icons/readmate128.png"
   },
+"content_scripts": [
+  {
+    "matches": ["<all_urls>"],
+    "js": [
+      "scripts/jquery-3.7.1.min.js",
+      "scripts/highlight.js"
+    ],
+    "run_at": "document_end"
+ }
+],
   "web_accessible_resources": [
     {
       "resources": [
@@ -34,6 +48,6 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self';" 
   }
 }
