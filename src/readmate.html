@@ -31,6 +31,9 @@
         "
       />
       <h1 id="title">ReadMate</h1>
+      <button id="themeToggleBtn" class="btn">
+        <i class="bi bi-moon-fill"></i> 
+      </button>
       <button id="settingsBtn" class="btn">
         <i class="bi bi-gear-fill"></i>
       </button>
@@ -51,11 +54,31 @@
         <i class="bi bi-play-circle-fill"></i>
       </button>
 
+      <div id="replayBtn-container">
+        <button id="replayBtn" class="btn">
+          <i class="bi bi-arrow-repeat"></i>
+        </button>
+      </div>
+
       <button id="fastBtn" class="btn">
         <i class="bi bi-skip-forward-fill"></i>
       </button>
     </div>
 
-    <script src="../scripts/readmate.js"></script>
+    <div id="fileUpload">
+      <p class="fileUploadText">Or, upload a document!</p>
+      <label for="documentUpload" class="upload-button">
+        <i class="bi bi-file-earmark-arrow-up-fill"></i>
+      </label>
+      <input
+        type="file"
+        id="documentUpload"
+        accept=".txt, .pdf, .docx"
+        style="display: none"
+      />
+    </div>
+
+    <script src="../libs/mammoth.browser.min.js"></script>
+    <script type="module" src="../scripts/readmate.js"></script>
   </body>
 </html>

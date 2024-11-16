@@ -13,58 +13,43 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <script src="../scripts/iro.min.js"></script>
+    <script src="../scripts/colorPicker.js"></script>
   </head>
 
   <body>
-    <!-- <hr style="border: none; border-top: 1px solid #dfdfdf; margin: 5px 0;">-->
-
     <div class="header">
       <h1>
         <img
           src="/icons/readmate.png"
           alt="Icon"
-          style="
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            margin-right: 8px;
-          "
+          style="width: 30px; height: 30px; vertical-align: middle; margin-right: 8px;"
         />
         Settings
       </h1>
     </div>
 
     <div class="options">
+      
+      <!-- Speech Rate -->
       <div class="rateSlider">
         <div class="div1"><label for="rate">Speech Rate</label></div>
         <div class="div2">
-          <input
-            type="range"
-            id="rate"
-            min="0.5"
-            max="2.0"
-            step="0.1"
-            value="1.0"
-          />
+          <input type="range" id="rate" min="0.5" max="2.0" step="0.1" value="1.0" />
           <span id="rateValue">1.0</span>
         </div>
       </div>
-
+    
+      <!-- Volume -->
       <div class="volumeSlider">
         <div class="div1"><label for="volume">Volume</label></div>
         <div class="div2">
-          <input
-            type="range"
-            id="volume"
-            min="0"
-            max="1.0"
-            step="0.05"
-            value="1.0"
-          />
+          <input type="range" id="volume" min="0" max="1.0" step="0.05" value="1.0" />
           <span id="volumeValue">1.0</span>
         </div>
       </div>
-
+    
+      <!-- Voice -->
       <div class="voiceDropdown">
         <div class="div1"><label for="voice">Voice</label></div>
         <div class="div2">
@@ -73,7 +58,32 @@
           </select>
         </div>
       </div>
+
+      <br>
+    
+      <!-- Highlight Colors and Color Wheel -->
+      <div class="highlightColorPicker">
+        <!-- Sentence Highlight Color -->
+        <div class="div1">
+          <label for="sentenceHighlightColor">Sentence Highlight Color</label>
+          <div>
+            <button id="editSentenceColorBtn">Edit Color</button>
+            <span id="selectedSentenceColorHex" style="padding: 2px;">#FFFFFF</span>
+          </div>
+        </div>
+    
+        <!-- Active Highlight Color -->
+        <div class="div1">
+          <label for="activeHighlightColor">Active Highlight Color</label>
+          <div>
+            <button id="editActiveColorBtn">Edit Color</button>
+            <span id="selectedActiveColorHex" style="padding: 2px;">#FFFFFF</span>
+          </div>
+        </div>
+        <div class="div2" id="colorWheelContainer"></div>
+      </div>
     </div>
+    
 
     <script src="../scripts/settings.js"></script>
   </body>

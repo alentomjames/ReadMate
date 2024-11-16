@@ -1,5 +1,25 @@
 var isPaused = false;
 
+// added light-dark mode 
+const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+document.addEventListener("DOMContentLoaded", () => {
+  chrome.storage.local.get(["theme"], (result) => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.body.classList.add(`${savedTheme}-mode`);
+    themeToggleBtn.innerHTML = savedTheme === "dark" ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+  });
+});
+
+themeToggleBtn.addEventListener("click", () => {
+  const isDarkMode = document.body.classList.toggle("dark-mode");
+  document.body.classList.toggle("light-mode", !isDarkMode);
+
+  themeToggleBtn.innerHTML = isDarkMode ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+
+  chrome.storage.local.set({"theme": isDarkMode ? "dark" : "light"});
+});
+
 /* This is adding click functionality to the button in the in the extension popup.
   The button can show:
     - A play button if awaiting a click, if TTS is currently paused, or if there is a click, but no text was highlighted.
@@ -23,9 +43,9 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
           }
         } catch (error) {
           console.error("Error while pausing/resuming TTS:", error);
-          alert(
-            "An error occurred while trying to pause or resume the reading."
-          );
+          // alert(
+          //   "An error occurred while trying to pause or resume the reading."
+          // );
         }
       } else {
         try {
@@ -39,53 +59,63 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
               return;
             }
             try {
-              chrome.scripting.executeScript(
-                {
-                  target: { tabId: tabs[0].id },
-                  function: () => window.getSelection().toString(),
-                },
-                (results) => {
-                  if (chrome.runtime.lastError) {
-                    console.error(
-                      "Error executing script:",
-                      chrome.runtime.lastError
-                    );
-                    alert("Failed to extract selected text. Please try again.");
-                    return;
-                  }
-
-                  const selectedText =
-                    results && results[0] && results[0].result;
-
-                  // If the text exists, show the pause button for initial button press. Else show the play button.
-                  if (selectedText) {
-                    try {
-                      chrome.runtime.sendMessage({ text: selectedText });
-                      document.getElementById("ttsBtn").innerHTML =
-                        '<i class="bi bi-pause-circle-fill"></i>';
-                    } catch (error) {
-                      console.error("Error sending text to TTS:", error);
-                      alert("Failed to send the selected text to TTS.");
+              // Check if there are stored chunks from an uploaded file
+              if (storedChunks.length > 0) {
+                chrome.runtime.sendMessage({ text: storedChunks.join(" ") });
+                document.getElementById("ttsBtn").innerHTML =
+                  '<i class="bi bi-pause-circle-fill"></i>';
+                return;
+              } else {
+                chrome.scripting.executeScript(
+                  {
+                    target: { tabId: tabs[0].id },
+                    function: () => window.getSelection().toString(),
+                  },
+                  (results) => {
+                    if (chrome.runtime.lastError) {
+                      console.error(
+                        "Error executing script:",
+                        chrome.runtime.lastError
+                      );
+                      alert(
+                        "Failed to extract selected text. Please try again."
+                      );
+                      return;
                     }
-                  } else {
-                    alert(
-                      "No text selected. Please highlight some text before clicking."
-                    );
-                    document.getElementById("ttsBtn").innerHTML =
-                      '<i class="bi bi-play-circle-fill"></i>';
+
+                    const selectedText =
+                      results && results[0] && results[0].result;
+
+                    // If the text exists, show the pause button for initial button press. Else show the play button.
+                    if (selectedText) {
+                      try {
+                        chrome.runtime.sendMessage({ text: selectedText });
+                        document.getElementById("ttsBtn").innerHTML =
+                          '<i class="bi bi-pause-circle-fill"></i>';
+                      } catch (error) {
+                        console.error("Error sending text to TTS:", error);
+                        alert("Failed to send the selected text to TTS.");
+                      }
+                    } else {
+                      alert(
+                        "No text selected. Please highlight some text before clicking."
+                      );
+                      document.getElementById("ttsBtn").innerHTML =
+                        '<i class="bi bi-play-circle-fill"></i>';
+                    }
                   }
-                }
-              );
+                );
+              }
             } catch (error) {
               console.error("Error during script execution:", error);
-              alert(
-                "An error occurred while executing the script to get selected text."
-              );
+              // alert(
+              //   "An error occurred while executing the script to get selected text."
+              // );
             }
           });
         } catch (error) {
           console.error("Error querying active tab:", error);
-          alert("An error occurred while accessing the active tab.");
+          // alert("An error occurred while accessing the active tab.");
         }
       }
     });
@@ -102,17 +132,15 @@ document.getElementById("slowBtn").addEventListener("click", () => {
       { skipSentence: true, forward: false },
       (response) => {
         if (chrome.runtime.lastError) {
-          console.log(
-            "Failed to reverse skip. Please try again."
-          );
+          // console.log("Failed to reverse skip. Please try again.");
           return;
         }
 
         if (!response || !response.success) {
           console.error("Failed to process the rate change request.");
-          alert(
-            "n issue occurred while trying to skip the sentence. Please try again."
-          );
+          // alert(
+          //   "An issue occurred while trying to skip the sentence. Please try again."
+          // );
         } else {
           console.log("Sentence reverse skipped successfully.");
         }
@@ -132,22 +160,41 @@ document.getElementById("fastBtn").addEventListener("click", () => {
       (response) => {
         if (chrome.runtime.lastError) {
           console.error("Runtime error:", chrome.runtime.lastError);
-          alert(
-            "Failed to skip the current sentence. Please try again."
-          );
+          // alert("Failed to skip the current sentence. Please try again.");
           return;
         }
 
         if (!response || !response.success) {
           console.error("Failed to skip the sentence.");
-          alert(
-            "An issue occurred while trying to skip the sentence. Please try again."
-          );
+          // alert(
+          //   "An issue occurred while trying to skip the sentence. Please try again."
+          // );
         } else {
           console.log("Sentence skipped successfully.");
         }
       }
     );
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    // alert("An unexpected error occurred. Please try again.");
+  }
+});
+
+// The repeat button sends a repeatSentence request.
+document.getElementById("replayBtn").addEventListener("click", () => {
+  try {
+    chrome.runtime.sendMessage({ repeatSentence: true }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error("Runtime error:", chrome.runtime.lastError);
+        return;
+      }
+
+      if (!response || !response.success) {
+        console.error("Failed to repeat the sentence.");
+      } else {
+        console.log("Sentence repeated successfully.");
+      }
+    });
   } catch (error) {
     console.error("Unexpected error:", error);
     // alert("An unexpected error occurred. Please try again.");
@@ -185,8 +232,8 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
       {
         url: "src/settings.html",
         type: "popup",
-        width: 400,
-        height: 200,
+        width: 435,
+        height: 395,
       },
       (window) => {
         if (chrome.runtime.lastError) {
@@ -205,6 +252,23 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
     alert(
       "An unexpected error occurred while opening the settings window. Please try again."
     );
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.querySelector(".close-btn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      try {
+        // Use the window.close() method to close the popup
+        window.close();
+      } catch (error) {
+        console.error("Error while closing the popup:", error);
+        alert("An unexpected error occurred while trying to close the popup.");
+      }
+    });
+  } else {
+    console.error("Close button element not found.");
   }
 });
 
@@ -274,4 +338,63 @@ function resetTTSButton() {
       "An unexpected error occurred while resetting the TTS button. Please try again."
     );
   }
+}
+
+let storedChunks = [];
+
+document
+  .getElementById("documentUpload")
+  .addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "text/plain") {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileContent = e.target.result;
+        parseAndStoreText(fileContent);
+      };
+      reader.readAsText(file);
+    } else if (file.type === "application/pdf") {
+      const fileContent = await parsePDF(file);
+      parseAndStoreText(fileContent);
+    } else if (
+      file.type ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      const fileContent = await parseDOCX(file);
+      parseAndStoreText(fileContent);
+    } else {
+      alert("Please upload a valid file: .txt, .pdf, or .docx.");
+    }
+  });
+
+function parseAndStoreText(text) {
+  // Parse text into chunks (e.g., sentences) and store it
+  storedChunks = text.match(/[^.!?]+[.!?]?/g) || [text];
+  alert("Text loaded successfully! Press play to start reading.");
+}
+
+async function parsePDF(file) {
+  // Set the worker source for PDF.js to the local `pdf.worker.mjs` file
+  const pdfjsLib = await import(chrome.runtime.getURL("libs/pdf.mjs"));
+  pdfjsLib.GlobalWorkerOptions.workerSrc = chrome.runtime.getURL(
+    "libs/pdf.worker.mjs"
+  );
+
+  // Load and parse the PDF file
+  const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+  let text = "";
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map((item) => item.str).join(" ");
+  }
+
+  return text;
+}
+
+async function parseDOCX(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const { value: text } = await mammoth.extractRawText({ arrayBuffer });
+  return text;
 }

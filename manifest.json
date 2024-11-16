@@ -34,6 +34,20 @@
       "scripts/highlight.js"
     ],
     "run_at": "document_end"
+ }
+],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/iro.min.js",
+        "libs/pdf.js",
+        "libs/pdf.worker.js",
+        "libs/mammoth.browser.min.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';" 
   }
-]
 }
