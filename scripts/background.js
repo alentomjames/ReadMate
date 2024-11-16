@@ -55,7 +55,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       restartTTS();
     }
+    sendResponse({ success: true });
+    return true;
+  }
 
+
+  if (request.repeatSentence) {
+    sentenceSkipped = true;
+    chrome.tts.stop();
+    restartTTS();
     sendResponse({ success: true });
     return true;
   }
@@ -92,6 +100,25 @@ function tts(rate, volume, voice) {
         if (!tabs[0]) {
           console.error("No active tab found");
           return;
+    chrome.tts.speak(chunks[currentChunkIndex], {
+      requiredEventTypes: ["cancelled", "end", "interrupted", "error", "word"],
+      lang: lang,
+      rate: rate,
+      volume: volume,
+      voiceName: voice,
+      onEvent: function (event) {
+        if (event.type === "end") {
+          currentChunkIndex++;
+          if (currentChunkIndex < chunks.length) {
+            tts(rate, volume, voice);
+          } else {
+            chrome.runtime.sendMessage({ ttsEnded: true });
+          }
+        }
+        if (event.type === "cancelled" || event.type === "interrupted") {
+          if (!sentenceSkipped) {
+            resetTTS();
+          }
         }
 
         try {

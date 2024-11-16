@@ -3,20 +3,19 @@
   padding: 0;
   box-sizing: border-box;
   border: none;
-  
 }
 
 body {
   font-family: "DM Sans", sans-serif;
   text-align: center;
   width: 250;
-  
 }
 
 #controls {
   display: flex;
   justify-content: center;
   background-color: white;
+  align-items: center;
 }
 .drag-handle {
   cursor: grab;
@@ -27,43 +26,69 @@ body {
   padding: 3px;
   font-size: 30px;
   font-weight: bold;
+  outline: none;
+  border: none;
 }
 .topHeaderButton:hover {
   color: red;
 }
-#controls button {
-  margin: 0;
-}
+
 #controls button:hover {
   color: blue;
 }
 
-.close-btn { 
+.close-btn {
   font-size: 23px;
   color: white;
   padding-right: 5px;
   padding-bottom: 8px;
 }
-#stopBtn {
-  padding: 5px;
-  font-size: 50px;
-  color: #396396;
-}
-
+#stopBtn,
 #ttsBtn {
   padding: 5px;
   font-size: 50px;
   color: #396396;
+  outline: none;
+  border: none;
 }
 
-#fastBtn {
-  font-size: 25px;
-  color: #396396;
-}
-
+#fastBtn,
 #slowBtn {
   font-size: 25px;
   color: #396396;
+  outline: none;
+  border: none;
+}
+
+#replayBtn {
+  padding: 5px;
+  font-size: 35px;
+  color: white;
+  outline: none;
+  border: none;
+}
+
+#replayBtn-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 51px;
+  height: 51px;
+  border-radius: 50%;
+  background-color: #396396;
+  padding: 0;
+  margin: 0;
+  margin-left: 4px;
+  margin-top: 2px;
+  box-sizing: border-box;
+}
+
+#replayBtn-container:hover {
+  background-color: blue;
+}
+
+#replayBtn-container:hover #replayBtn {
+  color: white;
 }
 
 #topHeader {
@@ -75,8 +100,8 @@ body {
   color: white;
 }
 #title {
-  margin-left: 47px;
-  margin-right: 24px;
+  margin-left: 68px;
+  margin-right: 50px;
   padding-top: 10px;
   text-align: center;
   font-size: 15px;
@@ -89,8 +114,52 @@ body {
   color: white;
   padding-right: 5px;
   padding-bottom: 10px;
+  outline: none;
+  border: none;
 }
 
-#settingsBtn:hover { 
+#settingsBtn:hover {
   color: rgb(0, 153, 0);
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #396396;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: white;
+  outline: none;
+  border: none;
+}
+
+.upload-button:hover {
+  background-color: blue;
+}
+
+.upload-button i {
+  font-size: 24px; /* Adjust icon size as needed */
+  color: white; /* Ensures icon is visible within the button */
+}
+
+#fileUpload {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.fileUploadText {
+  font-size: 15px;
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  margin-top: 15px;
 }

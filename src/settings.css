@@ -3,8 +3,8 @@
 }
 body { 
     font-family: "DM Sans", sans-serif;
-    
     overflow: hidden; 
+    width: 500px;
 }
 .options { 
   padding-left: 1em;
@@ -16,10 +16,9 @@ h1 {
   font-size: 20px;
 }
 
-
 .header { 
   background-color: #396396;
-  width: 384px;
+  width: 500px;
   padding-left: 1em;
   padding-bottom: 0.2em;
   color: white;
@@ -32,16 +31,38 @@ h1 {
 .rateSlider, .volumeSlider, .voiceDropdown {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-  }
-  
-.div1 { 
-    grid-area: 1 / 1 / 2 / 2; 
-  }
+}
+.highlightColorPicker {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  justify-items: start;
+}
 
-.div2 { 
-    grid-area: 1 / 2 / 2 / 3; 
-  }
+.highlightColorPicker .div1 {
+  display: flex;
+  flex-direction: column;
+}
 
+
+#colorWheelContainer {
+  grid-column: 2; 
+  grid-row: 1 / span 2; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button { 
+  background-color: #396396;
+  color: white;
+  border: none;
+  opacity: 0.8;
+  transition: 0.3s;
+  border: none;
+  text-decoration: none; 
+  border-radius: 10px;
+}
+button:hover {opacity: 1} 
