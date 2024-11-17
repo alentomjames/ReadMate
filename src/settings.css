@@ -24,6 +24,32 @@ h1 {
   color: white;
 }
 
+/* Light Mode */
+body.light-mode {
+  background-color: white;
+  color: black;
+}
+body.light-mode .header {
+  background-color: #396396;
+  color: white;
+}
+body.light-mode button {
+  color: white;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+body.dark-mode .header {
+  background-color:#396396;
+  color: white;
+}
+body.dark-mode button {
+  color: white;
+}
+
 #voiceSelect {
   width: 150px;
 } 
