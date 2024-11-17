@@ -26,6 +26,37 @@
       flexDirection: 'column',
       boxShadow: '0 0 10px rgba(0,0,0,0.5)',
     });
+
+    // **Add the warning popup**
+    const warningPopup = document.createElement('div');
+    warningPopup.id = '_magnifier_warning';
+    warningPopup.innerText = 'May not work as intended on some pages.';
+    Object.assign(warningPopup.style, {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      padding: '10px 15px',
+      backgroundColor: 'rgba(0,0,0,0.8)',
+      color: 'white',
+      fontSize: '14px',
+      borderRadius: '5px',
+      opacity: '1',
+      transform: 'translate(-50%, -50%)',
+      transition: 'opacity 1s ease-in-out',
+      zIndex: 2147483647,
+      textAlign: 'center',
+    });
+
+    // Append the warning popup to the magnifier window
+    magnifierWindow.appendChild(warningPopup);
+
+    // **Set timeout to fade out and remove the popup after 5 seconds**
+    setTimeout(() => {
+      warningPopup.style.opacity = '0';
+      setTimeout(() => {
+        warningPopup.remove();
+      }, 1000); // Wait for the fade-out transition to complete
+    }, 3000); // Display for 5 seconds
   
     // Create the header
     const header = document.createElement('div');
@@ -43,7 +74,7 @@
   
     // Title
     const title = document.createElement('div');
-    title.innerText = 'Magnifier';
+    title.innerText = 'Magnifier (Click to drag)';
     Object.assign(title.style, {
       marginLeft: '10px',
       fontSize: '16px',
