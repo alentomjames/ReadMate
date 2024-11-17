@@ -4,6 +4,7 @@
   "description": "TTS browser extension to help those with learning disabilities",
   "version": "0.0.1",
   "permissions": ["storage", "activeTab", "scripting", "tts", "contextMenus"],
+
   "background": {
     "service_worker": "scripts/background.js"
   },
@@ -22,13 +23,18 @@
     "48": "icons/readmate48.png",
     "128": "icons/readmate128.png"
   },
+  "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
       "resources": [
+        "libs/purify.min.js",
         "scripts/iro.min.js",
         "libs/pdf.js",
         "libs/pdf.worker.js",
-        "libs/mammoth.browser.min.js"
+        "libs/mammoth.browser.min.js",
+        "libs/jquery-3.6.0.min.js",
+        "scripts/magnifying-glass.js",
+        "styles/snapshot2.css"     
       ],
       "matches": ["<all_urls>"]
     }
