@@ -63,3 +63,4 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.local.set({ voice: selectedVoice });
   });
 });
+

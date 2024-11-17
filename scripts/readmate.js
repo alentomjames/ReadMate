@@ -398,3 +398,17 @@ async function parseDOCX(file) {
   const { value: text } = await mammoth.extractRawText({ arrayBuffer });
   return text;
 }
+
+document.getElementById("magnifyBtn").addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tabId = tabs[0].id;
+    chrome.runtime.sendMessage({ action: "activateMagnifier", tabId: tabId }, (response) => {
+      if (chrome.runtime.lastError || !response || !response.success) {
+        console.error("Failed to activate magnifier:", chrome.runtime.lastError);
+        alert("Failed to activate magnifier. Please try again.");
+      } else {
+        console.log("Magnifier activated successfully.");
+      }
+    });
+  });
+});
