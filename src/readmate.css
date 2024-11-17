@@ -156,6 +156,9 @@ body.dark-mode {
   border: none;
 }
 
+#magnifyBtn {
+  color: white;
+}
 
 #settingsBtn:hover #magnifyBtn:hover{ 
   color: rgb(0, 153, 0);
