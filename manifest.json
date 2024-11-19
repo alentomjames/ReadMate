@@ -31,7 +31,9 @@
     "matches": ["<all_urls>"],
     "js": [
       "scripts/jquery-3.7.1.min.js",
+      "libs/mark.min.js",
       "scripts/highlight.js"
+
     ],
     "run_at": "document_end"
  }
