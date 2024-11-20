@@ -136,21 +136,13 @@ body.dark-mode {
 }
 
 #title {
-  margin-left: 68px;
-  margin-right: 50px;
+  margin-left: 45px;
+  margin-right: 45px;
   padding-top: 10px;
   text-align: center;
   font-size: 15px;
   padding-bottom: 5px;
 }
-
-/* .light-mode #title {
-  color: white; 
-}
-
-.dark-mode #title {
-  color: black; 
-} */
 
 #settingsBtn {
   padding-right: 1px;
@@ -163,50 +155,30 @@ body.dark-mode {
   border: none;
 }
 
-#settingsBtn:hover {
+#magnifyBtn {
+  color: white;
+}
+
+#settingsBtn:hover #magnifyBtn:hover{ 
   color: rgb(0, 153, 0);
 }
 
 .upload-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #396396;
-  cursor: pointer;
-  transition: background-color 0.3s;
   color: white;
-  outline: none;
-  border: none;
+  cursor: pointer;
 }
+
 
 .light-mode .upload-button i {
   color: white;
 }
 
 .dark-mode .upload-button i {
-  color: black; 
+  color:white;
 }
 
-.upload-button:hover {
-  background-color: blue;
-}
-
-.upload-button i {
-  font-size: 24px; 
-  color: white; 
-}
-
-#fileUpload {
-  display: flex;
-  width: 100%;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding-bottom: 10px;
+.upload-button i:hover {
+  color: green;
 }
 
 .fileUploadText {

@@ -18,8 +18,6 @@
   </head>
   <body>
     <div id="topHeader">
-      <!-- TODO: implement drag handle. -->
-      <!-- <div class="drag-handle">&#x2630;</div>-->
       <img
         src="/icons/readmate.png"
         alt="Icon"
@@ -28,14 +26,30 @@
           height: 30px;
           vertical-align: middle;
           margin-left: 10px;
+          margin-right: 8px;
         "
       />
-      <h1 id="title">ReadMate</h1>
       <button id="themeToggleBtn" class="btn">
         <i class="bi bi-moon-fill"></i> 
       </button>
+      <h1 id="title">ReadMate</h1>
+      <div id="fileUpload">
+        <label for="documentUpload" class="upload-button">
+          <i class="bi bi-file-earmark-arrow-up-fill"></i>
+        </label>
+        <input
+          type="file"
+          id="documentUpload"
+          accept=".txt, .pdf, .docx"
+          style="display: none"
+        />
+      </div>  
       <button id="settingsBtn" class="btn">
         <i class="bi bi-gear-fill"></i>
+      </button>
+
+      <button id="magnifyBtn" class="btn">
+        <i class="bi bi-search"></i>
       </button>
 
       <button class="topHeaderButton close-btn">&times;</button>
@@ -60,22 +74,10 @@
         </button>
       </div>
 
+
       <button id="fastBtn" class="btn">
         <i class="bi bi-skip-forward-fill"></i>
       </button>
-    </div>
-
-    <div id="fileUpload">
-      <p class="fileUploadText">Or, upload a document!</p>
-      <label for="documentUpload" class="upload-button">
-        <i class="bi bi-file-earmark-arrow-up-fill"></i>
-      </label>
-      <input
-        type="file"
-        id="documentUpload"
-        accept=".txt, .pdf, .docx"
-        style="display: none"
-      />
     </div>
 
     <script src="../libs/mammoth.browser.min.js"></script>
