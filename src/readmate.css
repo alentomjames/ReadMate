@@ -180,3 +180,13 @@ body.dark-mode {
 .upload-button i:hover {
   color: green;
 }
+
+.fileUploadText {
+  font-size: 15px;
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  margin-top: 15px;
+}
+
+
