@@ -92,16 +92,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return false;
 });
 
-function sendTTSStatus(status) {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (tabs[0]) {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        action: "ttsStatus",
-        status: status,
-      });
-    }
-  });
-}
 
 function tts(rate, volume, voice) {
   chrome.tts.stop();
@@ -193,10 +183,14 @@ function tts(rate, volume, voice) {
         }
       }
     );
+  }else{
+    resetTTS();
+    sendTTSStatus("ended");
   }
 }
 
 function restartTTS() {
+  chrome.tts.stop();
   chrome.storage.local.get(["rate", "volume", "voice"], (result) => {
     const rate = result.rate || defaultRate;
     const volume = result.volume || defaultVolume;
@@ -213,6 +207,17 @@ function resetTTS() {
   chunks = [];
   sendTTSStatus("ended");
 
+}
+
+function sendTTSStatus(status) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    if (tabs[0]) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: "ttsStatus",
+        status: status,
+      });
+    }
+  });
 }
 
 // Context menu setup
