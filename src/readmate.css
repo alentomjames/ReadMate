@@ -17,9 +17,10 @@ body.light-mode {
 }
 
 body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
+  background-color:#3a3a3a;
+  color: white;
 }
+
 
 #themeToggleBtn {
   background-color: transparent; 
@@ -67,6 +68,11 @@ body.dark-mode {
   padding-bottom: 8px;
 }
 
+body.dark-mode .close-btn {
+  color:#6ebdfe;
+ 
+}
+
 #stopBtn,
 #ttsBtn {
   padding: 5px;
@@ -93,6 +99,24 @@ body.dark-mode {
   transition: color 0.1s ease;
 }
 
+body.dark-mode #fastBtn, 
+body.dark-mode #slowBtn,  
+body.dark-mode #stopBtn, 
+body.dark-mode #ttsBtn {
+  color: #5bb5ff;
+}
+body.dark-mode #fastBtn:hover, 
+body.dark-mode #slowBtn:hover,  
+body.dark-mode #stopBtn:hover, 
+body.dark-mode #ttsBtn:hover {
+  color:  #6176ff;
+}
+body.dark-mode #replayBtn-container { 
+  background-color: #5bb5ff;
+}
+body.dark-mode #replayBtn{ 
+  color: #3a3a3a;
+}
 #replayBtn-container {
   display: inline-flex;
   align-items: center;
@@ -113,17 +137,13 @@ body.dark-mode {
   color: white;
 }
 
-.dark-mode #replayBtn {
-  color: black;
+.dark-mode #replayBtn-container:hover {
+  background-color:  #6176ff;
 }
 
 #replayBtn-container:hover{
   background-color: blue;
   color:white;
-}
-
-#replayBtn-container:hover #replayBtn {
-  color: black; 
 }
 
 #topHeader {
@@ -135,9 +155,14 @@ body.dark-mode {
   color: white;
 }
 
+body.dark-mode #topHeader { 
+ background-color: #2b2b2b;
+ color:#6ebdfe;
+}
+
 #title {
-  margin-left: 45px;
-  margin-right: 45px;
+  margin-left:65px;
+  margin-right: 20px;
   padding-top: 10px;
   text-align: center;
   font-size: 15px;
@@ -155,30 +180,41 @@ body.dark-mode {
   border: none;
 }
 
+.upload-button { 
+  padding-left: 6px;
+}
+
 #magnifyBtn {
   color: white;
+  padding-right: 5px;
 }
 
-#settingsBtn:hover #magnifyBtn:hover{ 
-  color: rgb(0, 153, 0);
+#magnifyBtn:hover { 
+  color: rgb(154, 196, 255);
 }
 
-.upload-button {
+body.dark-mode #magnifyBtn { 
+  color:#6ebdfe;
+}
+body.dark-mode #settingsBtn { 
+  color:#6ebdfe;
+ 
+}
+body.dark-mode #magnifyBtn:hover, 
+body.dark-mode .upload-button:hover,
+body.dark-mode #settingsBtn:hover { 
   color: white;
-  cursor: pointer;
+}
+#settingsBtn:hover, #magnifyBtn:hover{ 
+  color:#6ebdfe;
 }
 
-
-.light-mode .upload-button i {
-  color: white;
+.light-mode .upload-button i:hover {
+  color: rgb(154, 196, 255);
 }
 
-.dark-mode .upload-button i {
-  color:white;
-}
-
-.upload-button i:hover {
-  color: green;
+.dark-mode .close-btn:hover { 
+  color: red;
 }
 
 .fileUploadText {
@@ -188,5 +224,3 @@ body.dark-mode {
   text-align: center;
   margin-top: 15px;
 }
-
-

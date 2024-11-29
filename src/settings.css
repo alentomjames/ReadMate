@@ -39,12 +39,12 @@ body.light-mode button {
 
 /* Dark Mode */
 body.dark-mode {
-  background-color: #121212;
-  color: white;
+  background-color:#3a3a3a;
+  color:#6ebdfe;
 }
 body.dark-mode .header {
-  background-color:#396396;
-  color: white;
+  background-color: #2b2b2b;
+  color:#6ebdfe;
 }
 body.dark-mode button {
   color: white;
@@ -92,3 +92,7 @@ button {
   border-radius: 10px;
 }
 button:hover {opacity: 1} 
+
+body.dark-mode .selectedActiveColorHex { 
+  color: white;
+}
