@@ -216,3 +216,11 @@ body.dark-mode #settingsBtn:hover {
 .dark-mode .close-btn:hover { 
   color: red;
 }
+
+.fileUploadText {
+  font-size: 15px;
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  margin-top: 15px;
+}

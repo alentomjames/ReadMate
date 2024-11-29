@@ -192,6 +192,14 @@
     if (magnifierInClone) {
       magnifierInClone.remove();
     }
+
+    // Remove elements with the active word highlight class
+    const activeWordHighlights = pageClone.querySelectorAll('.readmate-word-highlight');
+    activeWordHighlights.forEach((element) => {
+        element.classList.remove('readmate-word-highlight'); // Remove the class
+        // Optionally, restore the original text style
+        element.style.backgroundColor = 'transparent';
+    });
   
     // Remove scripts to prevent execution
     pageClone.querySelectorAll('script').forEach((script) => script.remove());

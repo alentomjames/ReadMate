@@ -63,7 +63,44 @@ document.addEventListener("DOMContentLoaded", function () {
   // Save the selected voice
   voiceSelect.addEventListener("change", function () {
     const selectedVoice = voiceSelect.value;
-    chrome.storage.local.set({ voice: selectedVoice });
+    chrome.tts.getVoices((voices) => {
+      const voice = voices.find((v) => v.voiceName === selectedVoice);
+
+      if (voice && (!voice.eventTypes || !voice.eventTypes.includes("word"))) {
+        // Create warning popup
+        const warningPopup = document.createElement("div");
+        warningPopup.id = "_voice_warning";
+        warningPopup.innerText = `The selected voice "${selectedVoice}" may not show active word highlights.`;
+        Object.assign(warningPopup.style, {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          padding: "10px 15px",
+          backgroundColor: "rgba(255,0,0,0.9)",
+          color: "white",
+          fontSize: "14px",
+          borderRadius: "5px",
+          opacity: "1",
+          transform: "translate(-50%, -50%)",
+          transition: "opacity 1s ease-in-out",
+          zIndex: 2147483647,
+          textAlign: "center",
+        });
+
+        document.body.appendChild(warningPopup);
+
+        // Remove the warning popup after a few seconds
+        setTimeout(() => {
+          warningPopup.style.opacity = "0";
+          setTimeout(() => {
+            warningPopup.remove();
+          }, 1000); // Wait for fade-out
+        }, 3000); // Display for 3 seconds
+      }
+
+      // Save the voice selection even if it doesn't support word highlighting
+      chrome.storage.local.set({ voice: selectedVoice });
+    });
   });
 
   // Load saved highlight colors and apply to the background of the spans

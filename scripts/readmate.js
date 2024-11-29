@@ -69,7 +69,17 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
                 chrome.scripting.executeScript(
                   {
                     target: { tabId: tabs[0].id },
-                    function: () => window.getSelection().toString(),
+                    function: () => {
+                      const selection = window.getSelection();
+                      const selectedText = selection.toString();
+
+                      // Clear the visual highlight
+                      if (selection.rangeCount > 0) {
+                        selection.removeAllRanges();
+                      }
+
+                      return selectedText;
+                    },
                   },
                   (results) => {
                     if (chrome.runtime.lastError) {
