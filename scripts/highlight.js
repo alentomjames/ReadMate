@@ -1,16 +1,16 @@
 // First, ensure jQuery is properly loaded
 if (typeof jQuery === "undefined") {
-    console.error("jQuery not loaded! Highlighting will not work.");
-  } else {
-    console.log("jQuery loaded successfully!");
-  }
+  console.error("jQuery not loaded! Highlighting will not work.");
+} else {
+  console.log("jQuery loaded successfully!");
+}
 
 // Ensure mark.js is loaded
 if (typeof Mark === "undefined") {
-    console.error("mark.js not loaded! Highlighting will not work.");
-  } else {
-    console.log("mark.js loaded successfully!");
-  }
+  console.error("mark.js not loaded! Highlighting will not work.");
+} else {
+  console.log("mark.js loaded successfully!");
+}
 
 var currentChunk;
 
@@ -32,22 +32,25 @@ $(document).ready(function () {
 
   // Function to convert hex color to rgba with given alpha
   function hexToRGBA(hex, alpha) {
-      // Remove '#' if present
-      hex = hex.replace('#', '');
+    // Remove '#' if present
+    hex = hex.replace("#", "");
 
-      // Convert 3-digit hex to 6-digit hex
-      if (hex.length === 3) {
-          hex = hex.split('').map(function (hexChar) {
-              return hexChar + hexChar;
-          }).join('');
-      }
+    // Convert 3-digit hex to 6-digit hex
+    if (hex.length === 3) {
+      hex = hex
+        .split("")
+        .map(function (hexChar) {
+          return hexChar + hexChar;
+        })
+        .join("");
+    }
 
-      var bigint = parseInt(hex, 16);
-      var r = (bigint >> 16) & 255;
-      var g = (bigint >> 8) & 255;
-      var b = bigint & 255;
+    var bigint = parseInt(hex, 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
 
-      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
   }
 
   // Function to update styles
@@ -81,24 +84,24 @@ $(document).ready(function () {
   }
 
   // Load colors from chrome.storage.local
-  chrome.storage.local.get(['sentenceColor', 'activeColor'], function(result) {
+  chrome.storage.local.get(["sentenceColor", "activeColor"], function (result) {
     if (result.sentenceColor) {
       sentenceColor = result.sentenceColor;
     }
     if (result.activeColor) {
       activeWordColor = result.activeColor;
     }
-    console.log('Loaded colors:', sentenceColor, activeWordColor);
+    console.log("Loaded colors:", sentenceColor, activeWordColor);
 
     // After loading colors, update styles
     updateStyles();
   });
 
   // Listen for storage changes
-  chrome.storage.onChanged.addListener(function(changes, areaName) {
-    if (areaName === 'local') {
+  chrome.storage.onChanged.addListener(function (changes, areaName) {
+    if (areaName === "local") {
       if (ttsInProgress) {
-        console.log('TTS in progress, deferring color updates until TTS ends.');
+        console.log("TTS in progress, deferring color updates until TTS ends.");
         if (changes.sentenceColor) {
           pendingColorUpdates.sentenceColor = changes.sentenceColor.newValue;
         }
@@ -109,12 +112,12 @@ $(document).ready(function () {
         let colorsChanged = false;
         if (changes.sentenceColor) {
           sentenceColor = changes.sentenceColor.newValue;
-          console.log('Updated sentence color to:', sentenceColor);
+          console.log("Updated sentence color to:", sentenceColor);
           colorsChanged = true;
         }
         if (changes.activeColor) {
           activeWordColor = changes.activeColor.newValue;
-          console.log('Updated active word color to:', activeWordColor);
+          console.log("Updated active word color to:", activeWordColor);
           colorsChanged = true;
         }
         if (colorsChanged) {
@@ -129,11 +132,11 @@ $(document).ready(function () {
   function applyPendingColorUpdates() {
     if (pendingColorUpdates.sentenceColor) {
       sentenceColor = pendingColorUpdates.sentenceColor;
-      console.log('Applying pending sentence color:', sentenceColor);
+      console.log("Applying pending sentence color:", sentenceColor);
     }
     if (pendingColorUpdates.activeColor) {
       activeWordColor = pendingColorUpdates.activeColor;
-      console.log('Applying pending active word color:', activeWordColor);
+      console.log("Applying pending active word color:", activeWordColor);
     }
     pendingColorUpdates = {};
     updateStyles(); // Update styles after applying pending updates
@@ -141,36 +144,37 @@ $(document).ready(function () {
 
   // Function to highlight the whole chunk (e.g., sentence or phrase)
   function highlightChunk() {
-      console.log("Attempting to highlight chunk:", currentChunk);
-      removeHighlights();
-    
-      if (!currentChunk) return;
-    
-      const normalizedChunk = currentChunk.trim();
-    
-      const markInstance = new Mark(document.body);
-    
-      markInstance.mark(normalizedChunk, {
-        'acrossElements': true,
-        'separateWordSearch': false,
-        'className': 'readmate-chunk-highlight',
-        'exclude': ['.readmate-word-highlight'],
-        'limit': 1,
-        'debug': true,
-        'done': function(totalMatches) {
-          highlightedElements = document.querySelectorAll('.readmate-chunk-highlight');
-          if (highlightedElements.length > 0) {
-            highlightedElements[0].scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          } else {
-            console.log("Chunk not found in the document.");
-          }
+    console.log("Attempting to highlight chunk:", currentChunk);
+    removeHighlights();
+
+    if (!currentChunk) return;
+
+    const normalizedChunk = currentChunk.trim();
+
+    const markInstance = new Mark(document.body);
+
+    markInstance.mark(normalizedChunk, {
+      acrossElements: true,
+      separateWordSearch: false,
+      className: "readmate-chunk-highlight",
+      exclude: [".readmate-word-highlight"],
+      limit: 1,
+      debug: true,
+      done: function (totalMatches) {
+        highlightedElements = document.querySelectorAll(
+          ".readmate-chunk-highlight"
+        );
+        if (highlightedElements.length > 0) {
+          highlightedElements[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        } else {
+          console.log("Chunk not found in the document.");
         }
-      });
-    }
-    
+      },
+    });
+  }
 
   function highlightWordInChunk(charIndex, length) {
     if (charIndex == null || length == null || charIndex < 0 || length <= 0)
@@ -199,7 +203,12 @@ $(document).ready(function () {
     let charCount = 0;
 
     // Create a TreeWalker to traverse text nodes
-    const treeWalker = document.createTreeWalker(chunkElement, NodeFilter.SHOW_TEXT, null, false);
+    const treeWalker = document.createTreeWalker(
+      chunkElement,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
 
     while (treeWalker.nextNode()) {
       const node = treeWalker.currentNode;
@@ -232,8 +241,8 @@ $(document).ready(function () {
       range.setStart(startNode, startOffset);
       range.setEnd(endNode, endOffset);
 
-      const mark = document.createElement('span');
-      mark.className = 'readmate-word-highlight';
+      const mark = document.createElement("span");
+      mark.className = "readmate-word-highlight";
       range.surroundContents(mark);
 
       activeWordElement = mark;

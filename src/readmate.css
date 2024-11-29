@@ -17,16 +17,15 @@ body.light-mode {
 }
 
 body.dark-mode {
-  background-color:#3a3a3a;
+  background-color: #3a3a3a;
   color: white;
 }
 
-
 #themeToggleBtn {
-  background-color: transparent; 
-  color: inherit; 
-  border: none; 
-  font-size: 16px; 
+  background-color: transparent;
+  color: inherit;
+  border: none;
+  font-size: 16px;
   cursor: pointer;
   padding: 5px;
   transition: color 0.3s ease;
@@ -58,7 +57,7 @@ body.dark-mode {
 }
 
 #controls button:hover {
-  color: blue;
+  color: #6ebdfe;
 }
 
 .close-btn {
@@ -69,8 +68,7 @@ body.dark-mode {
 }
 
 body.dark-mode .close-btn {
-  color:#6ebdfe;
- 
+  color: #6ebdfe;
 }
 
 #stopBtn,
@@ -99,22 +97,22 @@ body.dark-mode .close-btn {
   transition: color 0.1s ease;
 }
 
-body.dark-mode #fastBtn, 
-body.dark-mode #slowBtn,  
-body.dark-mode #stopBtn, 
+body.dark-mode #fastBtn,
+body.dark-mode #slowBtn,
+body.dark-mode #stopBtn,
 body.dark-mode #ttsBtn {
   color: #5bb5ff;
 }
-body.dark-mode #fastBtn:hover, 
-body.dark-mode #slowBtn:hover,  
-body.dark-mode #stopBtn:hover, 
+body.dark-mode #fastBtn:hover,
+body.dark-mode #slowBtn:hover,
+body.dark-mode #stopBtn:hover,
 body.dark-mode #ttsBtn:hover {
-  color:  #6176ff;
+  color: #6176ff;
 }
-body.dark-mode #replayBtn-container { 
+body.dark-mode #replayBtn-container {
   background-color: #5bb5ff;
 }
-body.dark-mode #replayBtn{ 
+body.dark-mode #replayBtn {
   color: #3a3a3a;
 }
 #replayBtn-container {
@@ -138,12 +136,12 @@ body.dark-mode #replayBtn{
 }
 
 .dark-mode #replayBtn-container:hover {
-  background-color:  #6176ff;
+  background-color: #6176ff;
 }
 
-#replayBtn-container:hover{
-  background-color: blue;
-  color:white;
+#replayBtn-container:hover {
+  background-color: #6ebdfe;
+  color: white;
 }
 
 #topHeader {
@@ -155,13 +153,13 @@ body.dark-mode #replayBtn{
   color: white;
 }
 
-body.dark-mode #topHeader { 
- background-color: #2b2b2b;
- color:#6ebdfe;
+body.dark-mode #topHeader {
+  background-color: #2b2b2b;
+  color: #6ebdfe;
 }
 
 #title {
-  margin-left:65px;
+  margin-left: 65px;
   margin-right: 20px;
   padding-top: 10px;
   text-align: center;
@@ -180,8 +178,12 @@ body.dark-mode #topHeader {
   border: none;
 }
 
-.upload-button { 
+.upload-button {
   padding-left: 6px;
+}
+
+.upload-button:hover {
+  cursor: pointer;
 }
 
 #magnifyBtn {
@@ -189,31 +191,31 @@ body.dark-mode #topHeader {
   padding-right: 5px;
 }
 
-#magnifyBtn:hover { 
+#magnifyBtn:hover {
   color: rgb(154, 196, 255);
 }
 
-body.dark-mode #magnifyBtn { 
-  color:#6ebdfe;
+body.dark-mode #magnifyBtn {
+  color: #6ebdfe;
 }
-body.dark-mode #settingsBtn { 
-  color:#6ebdfe;
- 
+body.dark-mode #settingsBtn {
+  color: #6ebdfe;
 }
-body.dark-mode #magnifyBtn:hover, 
+body.dark-mode #magnifyBtn:hover,
 body.dark-mode .upload-button:hover,
-body.dark-mode #settingsBtn:hover { 
+body.dark-mode #settingsBtn:hover {
   color: white;
 }
-#settingsBtn:hover, #magnifyBtn:hover{ 
-  color:#6ebdfe;
+#settingsBtn:hover,
+#magnifyBtn:hover {
+  color: #6ebdfe;
 }
 
 .light-mode .upload-button i:hover {
   color: rgb(154, 196, 255);
 }
 
-.dark-mode .close-btn:hover { 
+.dark-mode .close-btn:hover {
   color: red;
 }
 

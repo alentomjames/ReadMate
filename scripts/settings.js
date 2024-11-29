@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.classList.add(`${savedTheme}-mode`);
   });
 
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (changes.theme && namespace === "local") {
+      const newTheme = changes.theme.newValue;
+      document.body.classList.remove("light-mode", "dark-mode");
+      document.body.classList.add(`${newTheme}-mode`);
+    }
+  });
+
   // Load saved values for sliders and voice
   chrome.storage.local.get(["rate", "volume", "voice"], function (result) {
     const savedRate = result.rate || 1.0;
@@ -104,17 +112,20 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Load saved highlight colors and apply to the background of the spans
-  chrome.storage.local.get(["sentenceHighlightColor", "activeHighlightColor"], (result) => {
-    const savedSentenceColor = result.sentenceHighlightColor || "#FFFFFF";
-    const savedActiveColor = result.activeHighlightColor || "#FFFFFF";
+  chrome.storage.local.get(
+    ["sentenceHighlightColor", "activeHighlightColor"],
+    (result) => {
+      const savedSentenceColor = result.sentenceHighlightColor || "#FFFFFF";
+      const savedActiveColor = result.activeHighlightColor || "#FFFFFF";
 
-    // Update span text and background colors
-    sentenceColorSpan.textContent = savedSentenceColor;
-    sentenceColorSpan.style.backgroundColor = savedSentenceColor;
+      // Update span text and background colors
+      sentenceColorSpan.textContent = savedSentenceColor;
+      sentenceColorSpan.style.backgroundColor = savedSentenceColor;
 
-    activeColorSpan.textContent = savedActiveColor;
-    activeColorSpan.style.backgroundColor = savedActiveColor;
-  });
+      activeColorSpan.textContent = savedActiveColor;
+      activeColorSpan.style.backgroundColor = savedActiveColor;
+    }
+  );
 
   // Save and update the background color for Sentence Highlight
   editSentenceColorBtn.addEventListener("click", () => {
