@@ -1,24 +1,36 @@
 var isPaused = false;
+var readmateWindowIds = {};
 
-// added light-dark mode 
+// added light-dark mode
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(["theme"], (result) => {
-    const savedTheme = localStorage.getItem("theme") || "light";
+    const savedTheme = result.theme || "light";
     document.body.classList.add(`${savedTheme}-mode`);
-    themeToggleBtn.innerHTML = savedTheme === "dark" ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+
+    if (themeToggleBtn) {
+      themeToggleBtn.innerHTML =
+        savedTheme === "dark"
+          ? '<i class="bi bi-sun-fill"></i>'
+          : '<i class="bi bi-moon-fill"></i>';
+    }
   });
 });
 
-themeToggleBtn.addEventListener("click", () => {
-  const isDarkMode = document.body.classList.toggle("dark-mode");
-  document.body.classList.toggle("light-mode", !isDarkMode);
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", () => {
+    const isDarkMode = document.body.classList.toggle("dark-mode");
+    document.body.classList.toggle("light-mode", !isDarkMode);
 
-  themeToggleBtn.innerHTML = isDarkMode ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-fill"></i>';
+    themeToggleBtn.innerHTML = isDarkMode
+      ? '<i class="bi bi-sun-fill"></i>'
+      : '<i class="bi bi-moon-fill"></i>';
 
-  chrome.storage.local.set({"theme": isDarkMode ? "dark" : "light"});
-});
+    chrome.storage.local.set({ theme: isDarkMode ? "dark" : "light" });
+    focusPopup();
+  });
+}
 
 /* This is adding click functionality to the button in the in the extension popup.
   The button can show:
@@ -27,6 +39,8 @@ themeToggleBtn.addEventListener("click", () => {
 */
 document.getElementById("ttsBtn").addEventListener("click", () => {
   try {
+    focusPopup();
+
     chrome.tts.isSpeaking((speaking) => {
       if (speaking) {
         try {
@@ -43,9 +57,6 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
           }
         } catch (error) {
           console.error("Error while pausing/resuming TTS:", error);
-          // alert(
-          //   "An error occurred while trying to pause or resume the reading."
-          // );
         }
       } else {
         try {
@@ -69,7 +80,17 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
                 chrome.scripting.executeScript(
                   {
                     target: { tabId: tabs[0].id },
-                    function: () => window.getSelection().toString(),
+                    function: () => {
+                      const selection = window.getSelection();
+                      const selectedText = selection.toString();
+
+                      // Clear the visual highlight
+                      if (selection.rangeCount > 0) {
+                        selection.removeAllRanges();
+                      }
+
+                      return selectedText;
+                    },
                   },
                   (results) => {
                     if (chrome.runtime.lastError) {
@@ -108,14 +129,10 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
               }
             } catch (error) {
               console.error("Error during script execution:", error);
-              // alert(
-              //   "An error occurred while executing the script to get selected text."
-              // );
             }
           });
         } catch (error) {
           console.error("Error querying active tab:", error);
-          // alert("An error occurred while accessing the active tab.");
         }
       }
     });
@@ -128,6 +145,8 @@ document.getElementById("ttsBtn").addEventListener("click", () => {
 // The slow button sends a skipSentence request with forward set to false.
 document.getElementById("slowBtn").addEventListener("click", () => {
   try {
+    focusPopup();
+
     chrome.runtime.sendMessage(
       { skipSentence: true, forward: false },
       (response) => {
@@ -155,6 +174,8 @@ document.getElementById("slowBtn").addEventListener("click", () => {
 // The fast button sends a skipSentence request with forward set to true.
 document.getElementById("fastBtn").addEventListener("click", () => {
   try {
+    focusPopup();
+
     chrome.runtime.sendMessage(
       { skipSentence: true, forward: true },
       (response) => {
@@ -183,6 +204,8 @@ document.getElementById("fastBtn").addEventListener("click", () => {
 // The repeat button sends a repeatSentence request.
 document.getElementById("replayBtn").addEventListener("click", () => {
   try {
+    focusPopup();
+
     chrome.runtime.sendMessage({ repeatSentence: true }, (response) => {
       if (chrome.runtime.lastError) {
         console.error("Runtime error:", chrome.runtime.lastError);
@@ -204,6 +227,8 @@ document.getElementById("replayBtn").addEventListener("click", () => {
 // The stop button sends a stop request to the background script.
 document.getElementById("stopBtn").addEventListener("click", () => {
   try {
+    focusPopup();
+
     chrome.runtime.sendMessage({ stop: true }, (response) => {
       if (chrome.runtime.lastError) {
         console.log("Failed to stop reading the script. Please try again.");
@@ -243,6 +268,10 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
           );
           alert("Failed to open the settings window. Please try again.");
         } else {
+          if (!readmateWindowIds.settings) {
+            readmateWindowIds.settings = [];
+          }
+          readmateWindowIds.settings.push(window.id);
           console.log("Settings window opened successfully:", window);
         }
       }
@@ -262,6 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         // Use the window.close() method to close the popup
         window.close();
+        closeAllPopups();
       } catch (error) {
         console.error("Error while closing the popup:", error);
         alert("An unexpected error occurred while trying to close the popup.");
@@ -370,7 +400,30 @@ document
 function parseAndStoreText(text) {
   // Parse text into chunks (e.g., sentences) and store it
   storedChunks = text.match(/[^.!?]+[.!?]?/g) || [text];
-  alert("Text loaded successfully! Press play to start reading.");
+  chrome.storage.local.set({ uploadedFileContent: text }, () => {
+    chrome.windows.create(
+      {
+        url: "src/uploadedFilePopup.html",
+        type: "popup",
+        width: 600,
+        height: 400,
+      },
+      (window) => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            "Error opening uploaded file popup:",
+            chrome.runtime.lastError
+          );
+        } else {
+          if (!readmateWindowIds.filePopup) {
+            readmateWindowIds.filePopup = [];
+          }
+          readmateWindowIds.filePopup.push(window.id);
+          console.log("Uploaded file popup opened successfully:", window);
+        }
+      }
+    );
+  });
 }
 
 async function parsePDF(file) {
@@ -399,16 +452,79 @@ async function parseDOCX(file) {
   return text;
 }
 
+function focusPopup() {
+  // Add a slight delay to allow the main window focus transition to complete
+  chrome.windows.getAll({ populate: true }, (windows) => {
+    const filePopupWindowId =
+      readmateWindowIds.filePopup[readmateWindowIds.filePopup.length - 1];
+    const popup = windows.find((win) => win.id === filePopupWindowId);
+    if (popup) {
+      // Only focus the popup if it is not already focused
+      if (!popup.focused) {
+        chrome.windows.update(popup.id, { focused: true }, () => {
+          if (chrome.runtime.lastError) {
+            console.error("Failed to focus popup:", chrome.runtime.lastError);
+          } else {
+            console.log("Popup window focused.");
+          }
+        });
+      } else {
+        console.log("Popup is already focused.");
+      }
+    }
+  });
+}
+
 document.getElementById("magnifyBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabId = tabs[0].id;
-    chrome.runtime.sendMessage({ action: "activateMagnifier", tabId: tabId }, (response) => {
-      if (chrome.runtime.lastError || !response || !response.success) {
-        console.error("Failed to activate magnifier:", chrome.runtime.lastError);
-        alert("Failed to activate magnifier. Please try again.");
-      } else {
-        console.log("Magnifier activated successfully.");
+    chrome.runtime.sendMessage(
+      { action: "activateMagnifier", tabId: tabId },
+      (response) => {
+        if (chrome.runtime.lastError || !response || !response.success) {
+          console.error(
+            "Failed to activate magnifier:",
+            chrome.runtime.lastError
+          );
+          alert("Failed to activate magnifier. Please try again.");
+        } else {
+          console.log("Magnifier activated successfully.");
+        }
       }
-    });
+    );
   });
+});
+
+function closeAllPopups() {
+  for (const [key, windowIds] of Object.entries(readmateWindowIds)) {
+    windowIds.forEach((windowId) => {
+      chrome.windows.remove(windowId, () => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            `Failed to close window with ID ${windowId}:`,
+            chrome.runtime.lastError
+          );
+        } else {
+          console.log(`Closed window with ID ${windowId}.`);
+        }
+      });
+    });
+  }
+
+  readmateWindowIds = {};
+}
+
+chrome.windows.onRemoved.addListener((windowId) => {
+  for (const [key, popupIds] of Object.entries(readmateWindowIds)) {
+    const index = popupIds.indexOf(windowId);
+    if (index > -1) {
+      popupIds.splice(index, 1); // Remove the closed popup's ID
+      console.log(`Removed ${key} popup ID ${windowId} from tracking.`);
+      // If no more windows of this type are open, delete the key
+      if (popupIds.length === 0) {
+        delete readmateWindowIds[key];
+      }
+      break;
+    }
+  }
 });

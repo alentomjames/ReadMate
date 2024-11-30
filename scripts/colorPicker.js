@@ -14,15 +14,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const sentenceHexDisplay = document.getElementById("selectedSentenceColorHex");
     const activeHexDisplay = document.getElementById("selectedActiveColorHex");
 
-    if (sentenceHexDisplay) {
-        sentenceHexDisplay.textContent = sentenceHex;
-        sentenceHexDisplay.style.backgroundColor = sentenceHex;
+    chrome.storage.local.get(['sentenceColor', 'activeColor'], function(result) {
+    
+    if (result.sentenceColor) {
+        if (sentenceHexDisplay) {
+            sentenceHexDisplay.textContent = sentenceHex;
+            sentenceHexDisplay.style.backgroundColor = sentenceHex;
+        }
     }
+    if (result.activeColor) {
+        if (activeHexDisplay) {
+            activeHexDisplay.textContent = activeHex;
+            activeHexDisplay.style.backgroundColor = activeHex;
+        }
+    }
+    colorPicker.color.hexString = sentenceHex;
+    });
 
-    if (activeHexDisplay) {
-        activeHexDisplay.textContent = activeHex;
-        activeHexDisplay.style.backgroundColor = activeHex;
-    }
 
     colorPicker.on('color:change', function (color) {
         sentenceHex = color.hexString; 
@@ -32,20 +40,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const editSentenceColorBtn = document.getElementById("editSentenceColorBtn");
     if (editSentenceColorBtn) {
         editSentenceColorBtn.addEventListener("click", function () {
+            sentenceHex = colorPicker.color.hexString;
             if (sentenceHexDisplay) {
                 sentenceHexDisplay.textContent = sentenceHex; 
                 sentenceHexDisplay.style.backgroundColor = sentenceHex; 
             }
+            //Store the color to chrome storage
+            chrome.storage.local.set({ 'sentenceColor': sentenceHex }, function() {
+                console.log('Sentence color saved:', sentenceHex);
+            });
         });
     }
 
     const editActiveColorBtn = document.getElementById("editActiveColorBtn");
     if (editActiveColorBtn) {
         editActiveColorBtn.addEventListener("click", function () {
+            activeHex = colorPicker.color.hexString;
+
             if (activeHexDisplay) {
                 activeHexDisplay.textContent = activeHex; 
                 activeHexDisplay.style.backgroundColor = activeHex; 
             }
+            //Store the color to chrome storage
+            chrome.storage.local.set({ 'activeColor': activeHex  }, function() {
+                console.log('Active color saved:', activeHex);
+            });
         });
     }
 });
